@@ -1,6 +1,35 @@
 # Hindi LLM Summarizer
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/jigyansh21/HindiLLMSummarizer_Clean)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red?style=flat-square&logo=streamlit)](https://streamlit.io)
+
 A powerful Streamlit-based web application that uses machine learning to generate Hindi summaries from various input sources including manual text, URLs, and PDF documents.
+
+## 🔗 Repository
+
+**GitHub Repository**: [https://github.com/jigyansh21/HindiLLMSummarizer_Clean](https://github.com/jigyansh21/HindiLLMSummarizer_Clean)
+
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Use Cases](#-use-cases)
+- [Quick Start](#-quick-start)
+- [Requirements](#-requirements)
+- [Usage](#-usage)
+- [Technical Details](#-technical-details)
+- [Project Structure](#-project-structure)
+- [Configuration](#️-configuration)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#️-author)
+- [Acknowledgments](#-acknowledgments)
+- [Support](#-support)
+- [Live Demo](#-live-demo)
+- [Development Status](#-development-status)
+- [Project Stats](#-project-stats)
 
 ## 🌟 Features
 
@@ -16,18 +45,33 @@ A powerful Streamlit-based web application that uses machine learning to generat
 - **Real-time Processing**: Fast summarization using pre-trained multilingual models
 - **User-friendly Interface**: Clean, intuitive Streamlit web interface
 
+## 📸 Screenshots
+
+> *Screenshots of the application interface will be added here*
+
+## 🎯 Use Cases
+
+- **Academic Research**: Summarize Hindi research papers and articles
+- **News Analysis**: Quick summaries of Hindi news articles
+- **Document Processing**: Extract key points from Hindi PDFs
+- **Content Creation**: Generate concise summaries for social media or reports
+- **Language Learning**: Practice Hindi comprehension through summarization
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.8 or higher
 - pip (Python package installer)
+- 4GB+ RAM (recommended for optimal performance)
+- 2GB+ free disk space (for model caching)
+- Internet connection (for initial model download)
 
 ### Installation
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jigyansh21/HindiLLMSummarizer_Clean.git
    cd HindiLLMSummarizer_Clean
    ```
 
@@ -95,6 +139,9 @@ The application requires the following Python packages:
 - **Type**: Multilingual T5 (Text-to-Text Transfer Transformer)
 - **Capabilities**: Supports multiple languages including Hindi
 - **Architecture**: Encoder-decoder transformer model
+- **Model Size**: ~1.2B parameters
+- **Training Data**: Multilingual news articles and summaries
+- **Performance**: Optimized for extractive and abstractive summarization
 
 ### Key Components
 
@@ -162,7 +209,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open source and available under the [MIT License](https://github.com/jigyansh21/HindiLLMSummarizer_Clean/blob/main/LICENSE).
 
 ## 👨‍💻 Author
 
@@ -178,7 +225,31 @@ Thapar Institute of Engineering Technology
 
 ## 📞 Support
 
-If you encounter any issues or have questions, please open an issue on the GitHub repository.
+If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/jigyansh21/HindiLLMSummarizer_Clean/issues).
+
+## 🌐 Live Demo
+
+You can try the application by running it locally following the installation instructions above.
+
+## 🚧 Development Status
+
+- ✅ **Core Functionality**: Complete
+- ✅ **PDF Processing**: Complete
+- ✅ **URL Extraction**: Complete
+- ✅ **Hindi Font Support**: Complete
+- 🔄 **Performance Optimization**: In Progress
+- 📋 **Future Features**: 
+  - Batch processing
+  - API endpoint
+  - Docker containerization
+  - Multiple language support expansion
+
+## 📊 Project Stats
+
+![GitHub stars](https://img.shields.io/github/stars/jigyansh21/HindiLLMSummarizer_Clean?style=social)
+![GitHub forks](https://img.shields.io/github/forks/jigyansh21/HindiLLMSummarizer_Clean?style=social)
+![GitHub issues](https://img.shields.io/github/issues/jigyansh21/HindiLLMSummarizer_Clean)
+![GitHub last commit](https://img.shields.io/github/last-commit/jigyansh21/HindiLLMSummarizer_Clean)
 
 ---
 
