@@ -358,7 +358,7 @@ def summarize_text(text, summary_len, tokenizer, model):
         return real_summarize_text(combined_text, summary_len, tokenizer, model)
     else:
         return real_summarize_text(text, summary_len, tokenizer, model)
-
+ 
 # PDF text extraction with page limit validation
 def extract_text_from_pdf(file):
     try:
