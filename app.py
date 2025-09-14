@@ -112,8 +112,12 @@ st.markdown("""
     .stTextArea > div > div > textarea {
         border-radius: 10px;
         border: 2px solid #e0e0e0;
-        color: #333 !important;
+        color: #333333 !important;
         background-color: #ffffff !important;
+        font-size: 14px !important;
+    }
+    .stTextArea > div > div > textarea::placeholder {
+        color: #666666 !important;
     }
     .stFileUploader > div > div {
         border-radius: 10px;
@@ -146,6 +150,24 @@ st.markdown("""
         background-color: #ffffff !important;
     }
     .stSelectbox > div > div > div {
+        color: #333333 !important;
+        background-color: #ffffff !important;
+    }
+    /* Ensure all text is visible */
+    .stTextArea textarea {
+        color: #333333 !important;
+        background-color: #ffffff !important;
+    }
+    .stTextInput input {
+        color: #333333 !important;
+        background-color: #ffffff !important;
+    }
+    /* Fix for any white text on white background */
+    .stApp > div > div > div > div {
+        color: #333333 !important;
+    }
+    /* Ensure textarea content is visible */
+    textarea {
         color: #333333 !important;
         background-color: #ffffff !important;
     }
