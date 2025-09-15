@@ -11,10 +11,12 @@ from urllib.parse import urlparse, parse_qs
 try:
     from youtube_transcript_api import YouTubeTranscriptApi
     from youtube_transcript_api.formatters import TextFormatter
+    YOUTUBE_API_AVAILABLE = True
 except ImportError:
     print("youtube-transcript-api not installed. YouTube functionality will be limited.")
     YouTubeTranscriptApi = None
     TextFormatter = None
+    YOUTUBE_API_AVAILABLE = False
 
 class YouTubeProcessor:
     def __init__(self):
@@ -42,16 +44,24 @@ class YouTubeProcessor:
     
     async def get_transcript(self, video_id: str, language: str = "en") -> str:
         """Get transcript for YouTube video"""
-        if not YouTubeTranscriptApi:
-            raise Exception("YouTube transcript API not available")
+        if not YOUTUBE_API_AVAILABLE or not YouTubeTranscriptApi:
+            raise Exception("YouTube transcript API not available. Please install youtube-transcript-api: pip install youtube-transcript-api")
         
         try:
+            # Create an instance of YouTubeTranscriptApi
+            api = YouTubeTranscriptApi()
+            
             # Try to get transcript in specified language first
             try:
-                transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=[language])
-            except:
+                transcript = api.fetch(video_id, languages=[language])
+            except Exception as lang_error:
+                print(f"Failed to get transcript in {language}: {lang_error}")
                 # Fallback to any available language
-                transcript = YouTubeTranscriptApi.get_transcript(video_id)
+                try:
+                    transcript = api.fetch(video_id)
+                except Exception as fallback_error:
+                    print(f"Failed to get transcript in any language: {fallback_error}")
+                    raise Exception(f"No transcript available for this video. Error: {str(fallback_error)}")
             
             if not transcript:
                 raise Exception("No transcript available for this video")

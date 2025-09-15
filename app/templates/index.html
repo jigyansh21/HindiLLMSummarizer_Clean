@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hindi LLM Summarizer Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .gradient-bg {
@@ -44,6 +49,24 @@
         }
         .dark .text-white\/80 {
             color: #9ca3af;
+        }
+        .dark .text-gray-900 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+        .dark .text-gray-600 {
+            color: #9ca3af;
+        }
+        .dark .text-gray-500 {
+            color: #6b7280;
+        }
+        .dark .border-gray-200 {
+            border-color: #6b7280;
+        }
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -218,6 +241,11 @@
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
             
+            if (!body || !sunIcon || !moonIcon) {
+                console.error('Theme toggle elements not found');
+                return;
+            }
+            
             // Toggle dark class on body
             body.classList.toggle('dark');
             
@@ -230,6 +258,7 @@
                 moonIcon.classList.add('hidden');
                 // Store preference
                 localStorage.setItem('theme', 'dark');
+                console.log('Switched to dark mode');
             } else {
                 body.classList.remove('gradient-bg-dark');
                 body.classList.add('gradient-bg');
@@ -238,6 +267,7 @@
                 moonIcon.classList.remove('hidden');
                 // Store preference
                 localStorage.setItem('theme', 'light');
+                console.log('Switched to light mode');
             }
         }
 
@@ -248,18 +278,25 @@
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
             
+            if (!body || !sunIcon || !moonIcon) {
+                console.error('Theme elements not found during initialization');
+                return;
+            }
+            
             if (savedTheme === 'dark') {
                 body.classList.add('dark');
                 body.classList.remove('gradient-bg');
                 body.classList.add('gradient-bg-dark');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
+                console.log('Initialized dark mode');
             } else {
                 body.classList.remove('dark');
                 body.classList.remove('gradient-bg-dark');
                 body.classList.add('gradient-bg');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
+                console.log('Initialized light mode');
             }
         }
 
