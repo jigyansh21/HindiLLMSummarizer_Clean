@@ -121,7 +121,7 @@ class YouTubeProcessor:
                 raise Exception("No transcript available for this video")
             
             # Import summarizer service
-            from summarizer import SummarizerService
+            from src.core.summarizer import SummarizerService
             summarizer = SummarizerService()
             
             # Summarize the transcript
@@ -148,4 +148,3 @@ class YouTubeProcessor:
             return video_id is not None
         except:
             return False
-

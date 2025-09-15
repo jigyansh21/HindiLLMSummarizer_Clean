@@ -1,5 +1,5 @@
 """
-FastAPI Backend for Hindi LLM Summarizer Pro
+FastAPI Backend for MultiLanguage AI Text Summarizer
 Modern, async API with support for Text, URL, PDF, and YouTube summarization
 """
 
@@ -8,39 +8,46 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from typing import Optional, Literal
-import asyncio
+from typing import Literal
 import os
 import tempfile
 import shutil
 from pathlib import Path
 
-from summarizer import SummarizerService
-from pdf_utils import PDFProcessor
-from youtube_utils import YouTubeProcessor
+# Import our modules
+from src.core.summarizer import SummarizerService
+from src.utils.pdf_utils import PDFProcessor
+from src.utils.youtube_utils import YouTubeProcessor
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Hindi LLM Summarizer Pro",
+    title="MultiLanguage AI Text Summarizer",
     description="Professional AI-powered text summarization in Hindi and English",
     version="2.0.0"
 )
 
 # Define base directory for robust path handling
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).parent.parent.parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+STATIC_DIR = BASE_DIR / "static"
 
-# Mount static files
-app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+# Ensure directories exist
+TEMPLATES_DIR.mkdir(exist_ok=True)
+STATIC_DIR.mkdir(exist_ok=True)
 
-# Setup templates
-templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+# Setup templates and static files
+print(f"Templates directory: {TEMPLATES_DIR}")
+print(f"Templates exists: {TEMPLATES_DIR.exists()}")
+print(f"Templates contents: {list(TEMPLATES_DIR.glob('*.html')) if TEMPLATES_DIR.exists() else 'Directory not found'}")
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Initialize services
 summarizer_service = SummarizerService()
 pdf_processor = PDFProcessor()
 youtube_processor = YouTubeProcessor()
 
-# Pydantic models
+# Pydantic models for request validation
 class SummarizeRequest(BaseModel):
     text: str
     language: Literal["hindi", "english"] = "hindi"
@@ -60,20 +67,40 @@ class SummarizeYouTubeRequest(BaseModel):
     language: Literal["hindi", "english"] = "hindi"
     summary_length: Literal["short", "medium", "long", "auto"] = "auto"
 
-# Routes
+# Web Routes
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request):
+async def home(request: Request):
     """Language selection page"""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "title": "MultiLanguage AI Text Summarizer"
+    })
 
 @app.get("/summarizer", response_class=HTMLResponse)
-async def summarizer_page(request: Request, language: str = "hindi"):
+async def summarizer_dashboard(request: Request, language: str = "hindi"):
     """Main summarizer dashboard"""
     return templates.TemplateResponse("summarizer.html", {
-        "request": request, 
+        "request": request,
+        "language": language,
+        "title": "Summarizer Dashboard"
+    })
+
+@app.get("/result", response_class=HTMLResponse)
+async def result_page(request: Request, summary: str, title: str = "Summary", language: str = "hindi"):
+    """Results display page"""
+    return templates.TemplateResponse("result.html", {
+        "request": request,
+        "summary": summary,
+        "title": title,
         "language": language
     })
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "message": "MultiLanguage AI Text Summarizer is running!"}
+
+# API Endpoints
 @app.post("/api/summarize/text")
 async def summarize_text(request: SummarizeRequest):
     """Summarize raw text"""
@@ -83,15 +110,7 @@ async def summarize_text(request: SummarizeRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return {
-            "success": True,
-            "summary": result["summary"],
-            "original_length": result["original_length"],
-            "summary_length": result["summary_length"],
-            "compression_ratio": result["compression_ratio"],
-            "processing_time": result["processing_time"],
-            "language": request.language
-        }
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -104,16 +123,7 @@ async def summarize_url(request: SummarizeURLRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return {
-            "success": True,
-            "summary": result["summary"],
-            "title": result["title"],
-            "original_length": result["original_length"],
-            "summary_length": result["summary_length"],
-            "compression_ratio": result["compression_ratio"],
-            "processing_time": result["processing_time"],
-            "language": request.language
-        }
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -123,41 +133,37 @@ async def summarize_pdf(
     language: str = Form("hindi"),
     summary_length: str = Form("auto")
 ):
-    """Upload and summarize PDF content"""
+    """Upload and summarize PDF file"""
     try:
+        # Validate file type
+        if not file.filename.lower().endswith('.pdf'):
+            raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+        
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            content = await file.read()
-            tmp_file.write(content)
-            tmp_file_path = tmp_file.name
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+            shutil.copyfileobj(file.file, temp_file)
+            temp_path = temp_file.name
         
         try:
             # Extract text from PDF
-            extracted_text = await pdf_processor.extract_text(tmp_file_path)
+            text = await pdf_processor.extract_text(temp_path)
             
-            if not extracted_text.strip():
-                raise HTTPException(status_code=400, detail="No text found in PDF")
-            
-            # Summarize the extracted text
+            # Summarize the text
             result = await summarizer_service.summarize_text(
-                text=extracted_text,
+                text=text,
                 language=language,
                 summary_length=summary_length
             )
             
-            return {
-                "success": True,
-                "summary": result["summary"],
-                "original_length": result["original_length"],
-                "summary_length": result["summary_length"],
-                "compression_ratio": result["compression_ratio"],
-                "processing_time": result["processing_time"],
-                "language": language,
-                "filename": file.filename
-            }
+            # Add file information
+            result["filename"] = file.filename
+            result["file_type"] = "PDF"
+            
+            return result
+            
         finally:
             # Clean up temporary file
-            os.unlink(tmp_file_path)
+            os.unlink(temp_path)
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -171,16 +177,7 @@ async def summarize_youtube(request: SummarizeYouTubeRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return {
-            "success": True,
-            "summary": result["summary"],
-            "title": result["title"],
-            "original_length": result["original_length"],
-            "summary_length": result["summary_length"],
-            "compression_ratio": result["compression_ratio"],
-            "processing_time": result["processing_time"],
-            "language": request.language
-        }
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -247,17 +244,6 @@ async def export_markdown(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/result", response_class=HTMLResponse)
-async def result_page(request: Request, summary: str = "", title: str = "Summary", language: str = "hindi"):
-    """Results page with summary display"""
-    return templates.TemplateResponse("result.html", {
-        "request": request,
-        "summary": summary,
-        "title": title,
-        "language": language
-    })
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
+    uvicorn.run(app, host="127.0.0.1", port=8000)

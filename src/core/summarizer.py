@@ -177,7 +177,7 @@ class SummarizerService:
             pdf.add_page()
             
             # Set up fonts
-            font_path = os.path.join(os.path.dirname(__file__), "..", "fonts", "NotoSansDevanagari-Regular.ttf")
+            font_path = os.path.join(os.path.dirname(__file__), "..", "..", "fonts", "NotoSansDevanagari-Regular.ttf")
             if os.path.exists(font_path):
                 pdf.add_font("NotoSans", "", font_path, uni=True)
                 pdf.set_font("NotoSans", "", 12)
@@ -263,4 +263,3 @@ class SummarizerService:
             
         except Exception as e:
             raise Exception(f"Failed to create Markdown file: {str(e)}")
-

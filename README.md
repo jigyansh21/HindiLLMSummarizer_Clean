@@ -1,292 +1,227 @@
 # MultiLanguage AI Text Summarizer
 
-A powerful web application for summarizing text content in both Hindi and English using advanced AI models and extractive summarization techniques. The application supports multiple input sources including manual text, URLs, PDF files, and YouTube videos.
+A powerful, modular web application for summarizing text content in both Hindi and English using advanced AI models and extractive summarization techniques. The application supports multiple input sources including manual text, URLs, PDF files, and YouTube videos.
 
 ## ✨ Features
 
-### 🌐 Multi-Language Support
-- **Hindi & English** summarization
-- Automatic language detection
-- Language-specific processing
+### 🎯 Core Functionality
+- **Multi-language Support**: Hindi and English summarization
+- **Multiple Input Types**: Text, URL, PDF, and YouTube video processing
+- **Flexible Summary Lengths**: Short, Medium, Long, and Auto modes
+- **Export Options**: PDF, Word, and Markdown formats
+- **Copy to Clipboard**: Easy sharing functionality
 
-### 📝 Multiple Input Sources
-- **Manual Text Input** - Direct text entry with word/character limits
-- **URL Processing** - Extract and summarize content from web pages
-- **PDF Documents** - Upload and process PDF files
-- **YouTube Videos** - Extract transcripts and generate summaries
+### 🎨 User Interface
+- **Modern Design**: Clean, responsive interface with TailwindCSS
+- **Dark/Light Theme**: Toggle between themes with persistent preferences
+- **Professional UI/UX**: Smooth animations and intuitive navigation
+- **Mobile Responsive**: Works seamlessly on all devices
 
-### 🎯 Smart Summarization
-- **Extractive Summarization** - Advanced sentence selection algorithm
-- **Multiple Length Options**:
-  - Short (25% of original)
-  - Medium (40% of original) 
-  - Long (60% of original)
-  - Auto (intelligent length selection)
-- **Dynamic Word Targeting** - Optimized for different content lengths
-
-### 🎨 Modern UI/UX
-- **Dark/Light Theme Toggle** - Seamless theme switching with persistence
-- **Responsive Design** - Works on desktop, tablet, and mobile
-- **Hero Icons** - Beautiful, consistent iconography
-- **Gradient Backgrounds** - Modern visual design
-- **Real-time Statistics** - Processing stats and word counts
-
-### 📤 Export Options
-- **PDF Export** - Generate PDF summaries
-- **Word Document** - Create .docx files
-- **Markdown** - Export as .md files
-- **Copy to Clipboard** - Quick text copying
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Python 3.8 or higher
-- pip package manager
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd HindiLLMSummarizer_Clean
-   ```
-
-2. **Create virtual environment**
-   ```bash
-   python -m venv venv
-   ```
-
-3. **Activate virtual environment**
-   - **Windows:**
-     ```bash
-     venv\Scripts\activate
-     ```
-   - **macOS/Linux:**
-     ```bash
-     source venv/bin/activate
-     ```
-
-4. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Run the application**
-   ```bash
-   python run_app.py
-   ```
-
-6. **Open in browser**
-   Navigate to `http://127.0.0.1:8000`
-
-## 📋 Requirements
-
-### Core Dependencies
-- **FastAPI** - Web framework
-- **Uvicorn** - ASGI server
-- **Transformers** - Hugging Face models
-- **PyTorch** - Deep learning framework
-- **NLTK** - Natural language processing
-- **BeautifulSoup4** - Web scraping
-- **PyMuPDF** - PDF processing
-- **python-docx** - Word document generation
-- **youtube-transcript-api** - YouTube transcript extraction
-
-### Optional Dependencies
-- **T5 Model** - For advanced summarization (auto-downloaded)
-- **Font Tools** - For Devanagari font support
+### 🚀 Technical Features
+- **FastAPI Backend**: High-performance async API
+- **Modular Architecture**: Clean, maintainable code structure
+- **AI Integration**: T5 transformer model with extractive fallback
+- **Error Handling**: Comprehensive error management and user feedback
 
 ## 🏗️ Project Structure
 
 ```
-HindiLLMSummarizer_Clean/
-├── app/
-│   ├── main.py                 # Main FastAPI application
-│   ├── simple_main.py          # Simplified FastAPI app
-│   ├── summarizer.py           # Core summarization logic
-│   ├── pdf_utils.py            # PDF processing utilities
-│   ├── youtube_utils.py        # YouTube transcript extraction
-│   ├── templates/              # HTML templates
-│   │   ├── index.html          # Language selection page
-│   │   ├── summarizer.html     # Main dashboard
-│   │   └── result.html         # Results display
-│   ├── static/                 # Static assets
-│   │   └── styles.css          # Custom CSS
-│   └── requirements.txt        # Python dependencies
-├── fonts/                      # Devanagari font files
-├── run_app.py                  # Application launcher
-├── requirements.txt            # Root dependencies
-└── README.md                   # This file
+MultiLanguage-AI-Text-Summarizer/
+├── src/                          # Source code
+│   ├── api/                      # API layer
+│   │   ├── __init__.py
+│   │   └── main.py              # FastAPI application
+│   ├── core/                     # Core business logic
+│   │   ├── __init__.py
+│   │   └── summarizer.py        # Summarization service
+│   └── utils/                    # Utility modules
+│       ├── __init__.py
+│       ├── pdf_utils.py         # PDF processing
+│       └── youtube_utils.py     # YouTube processing
+├── templates/                    # HTML templates
+│   ├── index.html               # Language selection
+│   ├── summarizer.html          # Main dashboard
+│   └── result.html              # Results display
+├── static/                       # Static assets
+│   └── styles.css               # Custom CSS
+├── fonts/                        # Font files
+│   └── NotoSansDevanagari-Regular.ttf
+├── main.py                      # Application entry point
+├── requirements.txt             # Python dependencies
+└── README.md                    # This file
 ```
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Run the Application
+```bash
+python main.py
+```
+
+### 3. Access the Application
+- **Language Selection**: http://127.0.0.1:8000/
+- **Main Dashboard**: http://127.0.0.1:8000/summarizer
+- **API Documentation**: http://127.0.0.1:8000/docs
+- **Health Check**: http://127.0.0.1:8000/health
+
+## 📖 Usage Guide
+
+### Language Selection
+1. Choose your preferred language (Hindi or English)
+2. Click on the language card to proceed to the dashboard
+
+### Text Summarization
+1. **Manual Text**: Paste your text in the text area
+2. **URL Content**: Enter a web URL to extract and summarize content
+3. **PDF Upload**: Upload a PDF file (max 15 pages)
+4. **YouTube Video**: Enter a YouTube URL to extract transcript and summarize
+
+### Summary Options
+- **Short**: Concise summary (20-50 words)
+- **Medium**: Balanced summary (40-100 words)
+- **Long**: Detailed summary (80-200 words)
+- **Auto**: Automatically determines optimal length
+
+### Export Options
+- **PDF**: Download as formatted PDF document
+- **Word**: Export as Microsoft Word document
+- **Markdown**: Save as Markdown file
+- **Copy**: Copy to clipboard for easy sharing
 
 ## 🔧 Configuration
 
 ### Environment Variables
-- No environment variables required
-- All configuration is handled internally
+- `PYTORCH_JIT=0` - Disable PyTorch JIT for Windows compatibility
 
-### Model Configuration
-- **T5 Model**: Automatically downloads on first use
-- **Extractive Summarization**: Primary method for reliability
-- **Language Models**: Optimized for Hindi and English
-
-## 📖 Usage Guide
-
-### 1. Language Selection
-- Choose between Hindi or English
-- Language affects processing and UI display
-- Can be changed at any time
-
-### 2. Text Summarization
-1. Select "Text" tab
-2. Enter your text (max 1,200 words)
-3. Choose summary length
-4. Click "Generate Summary"
-
-### 3. URL Summarization
-1. Select "URL" tab
-2. Paste the webpage URL
-3. Choose summary length
-4. Click "Generate Summary"
-
-### 4. PDF Summarization
-1. Select "PDF" tab
-2. Upload PDF file
-3. Choose summary length
-4. Click "Generate Summary"
-
-### 5. YouTube Summarization
-1. Select "YouTube" tab
-2. Paste YouTube video URL
-3. Choose summary length
-4. Click "Generate Summary"
-
-### 6. Export Options
-- **PDF**: Download as PDF file
-- **Word**: Download as .docx file
-- **Markdown**: Download as .md file
-- **Copy**: Copy to clipboard
+### Font Support
+- Hindi fonts are located in `fonts/NotoSansDevanagari-Regular.ttf`
+- Automatic fallback to Arial if Hindi font not found
 
 ## 🎨 Theme Customization
 
-### Dark Mode
-- Click the sun/moon icon in the top-right
-- Theme preference is saved automatically
-- Consistent across all pages
+The application supports both light and dark themes:
+- **Theme Toggle**: Click the sun/moon icon in the top-right corner
+- **Persistent**: Theme preference is saved in browser localStorage
+- **Automatic**: Theme persists across page refreshes and navigation
 
-### Light Mode
-- Clean, modern light theme
-- High contrast for readability
-- Professional appearance
+## 📡 API Documentation
 
-## 🔍 API Endpoints
+### Endpoints
 
-### Web Pages
-- `GET /` - Language selection
-- `GET /summarizer` - Main dashboard
-- `GET /result` - Summary results
+#### Summarization
+- `POST /api/summarize/text` - Summarize raw text
+- `POST /api/summarize/url` - Extract and summarize URL content
+- `POST /api/summarize/pdf` - Upload and summarize PDF file
+- `POST /api/summarize/youtube` - Extract transcript and summarize YouTube video
 
-### API Endpoints
-- `POST /api/summarize/text` - Text summarization
-- `POST /api/summarize/url` - URL summarization
-- `POST /api/summarize/pdf` - PDF summarization
-- `POST /api/summarize/youtube` - YouTube summarization
-- `POST /api/export/pdf` - PDF export
-- `POST /api/export/word` - Word export
-- `POST /api/export/markdown` - Markdown export
+#### Export
+- `POST /api/export/pdf` - Export summary as PDF
+- `POST /api/export/word` - Export summary as Word document
+- `POST /api/export/markdown` - Export summary as Markdown
+
+#### Utility
+- `GET /health` - Health check endpoint
+
+### Request/Response Format
+
+All API endpoints return JSON responses with the following structure:
+
+```json
+{
+  "summary": "Generated summary text",
+  "original_length": 500,
+  "summary_length": 100,
+  "compression_ratio": 0.2,
+  "processing_time": 2.3,
+  "title": "Document Title"
+}
+```
 
 ## 🛠️ Technical Details
 
-### Summarization Algorithm
-1. **Text Preprocessing** - Clean and normalize input
-2. **Sentence Splitting** - Split into sentences (supports Hindi punctuation)
-3. **Scoring** - Calculate sentence importance
-4. **Selection** - Choose optimal sentences for summary
-5. **Post-processing** - Format and polish output
+### Backend Architecture
+- **FastAPI**: Modern, fast web framework for building APIs
+- **Async/Await**: Non-blocking I/O for better performance
+- **Pydantic**: Data validation and serialization
+- **Jinja2**: Template engine for HTML rendering
 
-### Language Support
-- **Hindi**: Full Devanagari script support
-- **English**: Standard Latin script
-- **Mixed Content**: Handles bilingual text
+### AI/ML Components
+- **T5 Model**: Hugging Face transformer for text generation
+- **Extractive Summarization**: Fallback method for reliable results
+- **Multi-language Support**: Handles both Hindi and English text
 
-### Performance
-- **Fast Processing** - Optimized algorithms
-- **Memory Efficient** - Handles large documents
-- **Scalable** - Supports multiple concurrent users
+### Frontend Technologies
+- **TailwindCSS**: Utility-first CSS framework
+- **JavaScript**: Vanilla JS for interactivity
+- **Responsive Design**: Mobile-first approach
+- **Theme System**: CSS custom properties for theming
 
-## 🐛 Troubleshooting
+## 🚀 Performance
 
-### Common Issues
+- **Async Processing**: Non-blocking operations for better performance
+- **Model Caching**: AI models are loaded once and reused
+- **Chunked Processing**: Large texts are processed in chunks
+- **Progress Tracking**: Real-time updates during processing
+- **Error Handling**: Graceful fallbacks and user feedback
 
-1. **YouTube videos not working**
-   - Ensure video has captions/transcripts
-   - Check internet connection
-   - Try different video
+## 🔒 Security
 
-2. **PDF processing fails**
-   - Ensure PDF is not password protected
-   - Check file size (max 10MB)
-   - Verify PDF is not corrupted
+- **Input Validation**: All inputs are validated and sanitized
+- **File Type Validation**: Only allowed file types are processed
+- **Size Limits**: PDF files limited to 15 pages
+- **Error Handling**: Secure error messages without exposing internals
 
-3. **Theme not switching**
-   - Clear browser cache
-   - Check browser console for errors
-   - Ensure JavaScript is enabled
+## 🎯 Development
 
-4. **Model loading issues**
-   - Check internet connection
-   - Ensure sufficient disk space
-   - Restart application
+### Prerequisites
+- Python 3.8+
+- pip package manager
+- Virtual environment (recommended)
 
-### Error Messages
-- **"No transcript available"** - YouTube video lacks captions
-- **"PDF processing failed"** - PDF file issues
-- **"Text too long"** - Exceeded word limit
-- **"Invalid URL"** - Malformed web address
+### Setup Development Environment
+```bash
+# Clone the repository
+git clone <repository-url>
+cd MultiLanguage-AI-Text-Summarizer
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python main.py
+```
+
+### Code Structure
+- **Modular Design**: Clear separation of concerns
+- **Type Hints**: Full type annotation for better code quality
+- **Error Handling**: Comprehensive exception management
+- **Documentation**: Detailed docstrings and comments
+
+## 📝 License
+
+This project is created by Jigyansh ECE Undergraduate, Thapar Institute of Engineering Technology, Patiala.
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
+4. Add tests if applicable
 5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- **Hugging Face** - For transformer models
-- **FastAPI** - For the web framework
-- **Tailwind CSS** - For styling
-- **Heroicons** - For beautiful icons
-- **YouTube Transcript API** - For video processing
 
 ## 📞 Support
 
-For support, issues, or feature requests:
-- Create an issue on GitHub
-- Check the troubleshooting section
-- Review the documentation
-
-## 🔄 Version History
-
-### v2.0.0 (Current)
-- ✅ Dark/Light theme toggle
-- ✅ YouTube transcript processing
-- ✅ Enhanced extractive summarization
-- ✅ Improved UI/UX with Heroicons
-- ✅ Better error handling
-- ✅ Cross-page theme persistence
-
-### v1.0.0
-- ✅ Basic text summarization
-- ✅ PDF processing
-- ✅ URL content extraction
-- ✅ Multi-language support
+For support and questions, please contact the development team.
 
 ---
 
-**Made with ❤️ for the Hindi and English speaking community**
+**Created by Jigyansh ECE Undergraduate, Thapar Institute of Engineering Technology, Patiala**
