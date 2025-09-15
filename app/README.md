@@ -1,4 +1,4 @@
-# Hindi LLM Summarizer Pro - FastAPI Version
+# MultiLanguage AI Text Summarizer - FastAPI Version
 
 ## 🚀 Quick Start
 

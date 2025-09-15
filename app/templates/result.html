@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Summary Results - Hindi LLM Summarizer Pro</title>
+    <title>Summary Results - MultiLanguage AI Text Summarizer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -16,7 +16,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         .gradient-bg-dark {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
         }
         .summary-card {
             background: white;
@@ -140,18 +140,27 @@
         .dark .shadow-xl {
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
         }
+        
+        /* Force dark mode when dark class is present */
+        .dark {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+        }
+        
+        .dark body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen" id="body">
     <!-- Header -->
-    <div class="bg-white shadow-lg">
+    <div class="bg-white dark:bg-gray-800 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <i class="fas fa-brain text-3xl text-purple-600 mr-3"></i>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Summary Results</h1>
-                        <p class="text-sm text-gray-600">Language: <span class="font-semibold text-purple-600">{{ language.title() }}</span></p>
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Summary Results</h1>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Language: <span class="font-semibold text-purple-600 dark:text-purple-400">{{ language.title() }}</span></p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -184,25 +193,25 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Summary Card -->
-        <div class="summary-card p-8 mb-8">
+        <div class="summary-card dark:summary-card-dark p-8 mb-8">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-3xl font-bold text-gray-800">
-                    <i class="fas fa-file-alt text-blue-600 mr-3"></i>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
+                    <i class="fas fa-file-alt text-blue-600 dark:text-blue-400 mr-3"></i>
                     {{ title }}
                 </h2>
                 <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
                         {{ language.title() }}
                     </span>
-                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                    <span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">
                         <i class="fas fa-check-circle mr-1"></i>Complete
                     </span>
                 </div>
             </div>
 
             <!-- Summary Content -->
-            <div class="bg-gray-50 rounded-lg p-6 mb-6">
-                <div class="summary-text text-gray-800" id="summary-content">
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-6">
+                <div class="summary-text text-gray-800 dark:text-gray-200" id="summary-content">
                     {{ summary }}
                 </div>
             </div>
@@ -227,62 +236,62 @@
         <!-- Statistics and Analysis -->
         <div class="grid lg:grid-cols-3 gap-8">
             <!-- Summary Statistics -->
-            <div class="summary-card p-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                    <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+            <div class="summary-card dark:summary-card-dark p-6">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    <i class="fas fa-chart-bar text-blue-600 dark:text-blue-400 mr-2"></i>
                     Summary Statistics
                 </h3>
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Summary Length:</span>
-                        <span class="font-semibold" id="summary-length">{{ summary.split()|length }} words</span>
+                        <span class="text-gray-600 dark:text-gray-300">Summary Length:</span>
+                        <span class="font-semibold dark:text-white" id="summary-length">{{ summary.split()|length }} words</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Compression Ratio:</span>
-                        <span class="font-semibold" id="compression-ratio">1:5</span>
+                        <span class="text-gray-600 dark:text-gray-300">Compression Ratio:</span>
+                        <span class="font-semibold dark:text-white" id="compression-ratio">1:5</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Processing Time:</span>
-                        <span class="font-semibold" id="processing-time">2.3s</span>
+                        <span class="text-gray-600 dark:text-gray-300">Processing Time:</span>
+                        <span class="font-semibold dark:text-white" id="processing-time">2.3s</span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span class="text-gray-600">Language:</span>
-                        <span class="font-semibold text-purple-600">{{ language.title() }}</span>
+                        <span class="text-gray-600 dark:text-gray-300">Language:</span>
+                        <span class="font-semibold text-purple-600 dark:text-purple-400">{{ language.title() }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Quality Metrics -->
-            <div class="summary-card p-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                    <i class="fas fa-star text-yellow-600 mr-2"></i>
+            <div class="summary-card dark:summary-card-dark p-6">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    <i class="fas fa-star text-yellow-600 dark:text-yellow-400 mr-2"></i>
                     Quality Metrics
                 </h3>
                 <div class="space-y-4">
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600">Readability:</span>
-                            <span class="font-semibold text-green-600">Excellent</span>
+                            <span class="text-gray-600 dark:text-gray-300">Readability:</span>
+                            <span class="font-semibold text-green-600 dark:text-green-400">Excellent</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600">Coherence:</span>
-                            <span class="font-semibold text-green-600">High</span>
+                            <span class="text-gray-600 dark:text-gray-300">Coherence:</span>
+                            <span class="font-semibold text-green-600 dark:text-green-400">High</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                             <div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600">Completeness:</span>
-                            <span class="font-semibold text-blue-600">Good</span>
+                            <span class="text-gray-600 dark:text-gray-300">Completeness:</span>
+                            <span class="font-semibold text-blue-600 dark:text-blue-400">Good</span>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                             <div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div>
                         </div>
                     </div>
@@ -290,39 +299,39 @@
             </div>
 
             <!-- Export Options -->
-            <div class="summary-card p-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                    <i class="fas fa-download text-green-600 mr-2"></i>
+            <div class="summary-card dark:summary-card-dark p-6">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    <i class="fas fa-download text-green-600 dark:text-green-400 mr-2"></i>
                     Export Options
                 </h3>
                 <div class="space-y-3">
-                    <button onclick="exportPDF()" class="w-full flex items-center justify-between p-3 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                    <button onclick="exportPDF()" class="w-full flex items-center justify-between p-3 bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800 rounded-lg transition-colors">
                         <div class="flex items-center">
-                            <i class="fas fa-file-pdf text-red-600 mr-3"></i>
-                            <span class="font-medium">PDF Document</span>
+                            <i class="fas fa-file-pdf text-red-600 dark:text-red-400 mr-3"></i>
+                            <span class="font-medium dark:text-white">PDF Document</span>
                         </div>
-                        <i class="fas fa-arrow-right text-gray-400"></i>
+                        <i class="fas fa-arrow-right text-gray-400 dark:text-gray-500"></i>
                     </button>
-                    <button onclick="exportWord()" class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                    <button onclick="exportWord()" class="w-full flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-lg transition-colors">
                         <div class="flex items-center">
-                            <i class="fas fa-file-word text-blue-600 mr-3"></i>
-                            <span class="font-medium">Word Document</span>
+                            <i class="fas fa-file-word text-blue-600 dark:text-blue-400 mr-3"></i>
+                            <span class="font-medium dark:text-white">Word Document</span>
                         </div>
-                        <i class="fas fa-arrow-right text-gray-400"></i>
+                        <i class="fas fa-arrow-right text-gray-400 dark:text-gray-500"></i>
                     </button>
-                    <button onclick="exportMarkdown()" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                    <button onclick="exportMarkdown()" class="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors">
                         <div class="flex items-center">
-                            <i class="fas fa-file-code text-gray-600 mr-3"></i>
-                            <span class="font-medium">Markdown File</span>
+                            <i class="fas fa-file-code text-gray-600 dark:text-gray-400 mr-3"></i>
+                            <span class="font-medium dark:text-white">Markdown File</span>
                         </div>
-                        <i class="fas fa-arrow-right text-gray-400"></i>
+                        <i class="fas fa-arrow-right text-gray-400 dark:text-gray-500"></i>
                     </button>
-                    <button onclick="copyToClipboard()" class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                    <button onclick="copyToClipboard()" class="w-full flex items-center justify-between p-3 bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 rounded-lg transition-colors">
                         <div class="flex items-center">
-                            <i class="fas fa-copy text-green-600 mr-3"></i>
-                            <span class="font-medium">Copy to Clipboard</span>
+                            <i class="fas fa-copy text-green-600 dark:text-green-400 mr-3"></i>
+                            <span class="font-medium dark:text-white">Copy to Clipboard</span>
                         </div>
-                        <i class="fas fa-arrow-right text-gray-400"></i>
+                        <i class="fas fa-arrow-right text-gray-400 dark:text-gray-500"></i>
                     </button>
                 </div>
             </div>
@@ -334,7 +343,7 @@
                 <a href="/summarizer?language={{ language }}" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold">
                     <i class="fas fa-plus mr-2"></i>Create New Summary
                 </a>
-                <button onclick="shareSummary()" class="btn-secondary text-gray-800 px-8 py-3 rounded-lg font-semibold">
+                <button onclick="shareSummary()" class="btn-secondary text-gray-800 dark:text-white px-8 py-3 rounded-lg font-semibold">
                     <i class="fas fa-share mr-2"></i>Share Summary
                 </button>
             </div>
@@ -350,6 +359,23 @@
     </div>
 
     <script>
+        // Immediate theme check - run as soon as script loads
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            console.log('Immediate theme check, saved theme:', savedTheme);
+            if (savedTheme === 'dark') {
+                // Apply dark theme immediately with multiple approaches
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+                document.body.classList.remove('gradient-bg');
+                document.body.classList.add('gradient-bg-dark');
+                
+                // Force style attribute as backup
+                document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
+                console.log('Immediate dark theme applied with force styling');
+            }
+        })();
+
         function toggleTheme() {
             const body = document.getElementById('body');
             const sunIcon = document.getElementById('sun-icon');
@@ -392,42 +418,88 @@
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
             
-            if (!body || !sunIcon || !moonIcon) {
-                console.error('Theme elements not found during initialization');
+            console.log('Initializing theme, saved theme:', savedTheme);
+            
+            if (!body) {
+                console.error('Body element not found during theme initialization');
                 return;
             }
             
+            if (!sunIcon || !moonIcon) {
+                console.warn('Theme toggle icons not found, but continuing with theme initialization');
+            }
+            
+            // Force remove any existing theme classes first
+            body.classList.remove('dark', 'gradient-bg', 'gradient-bg-dark');
+            
             if (savedTheme === 'dark') {
                 body.classList.add('dark');
-                body.classList.remove('gradient-bg');
                 body.classList.add('gradient-bg-dark');
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-                console.log('Initialized dark mode');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+                console.log('Applied dark mode theme');
             } else {
-                body.classList.remove('dark');
-                body.classList.remove('gradient-bg-dark');
                 body.classList.add('gradient-bg');
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-                console.log('Initialized light mode');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
+                console.log('Applied light mode theme');
             }
         }
 
         function copyToClipboard() {
-            const summaryText = document.getElementById('summary-content').textContent;
-            navigator.clipboard.writeText(summaryText).then(() => {
-                showToast('Summary copied to clipboard!');
-            }).catch(() => {
-                // Fallback for older browsers
+            try {
+                const summaryText = document.getElementById('summary-content').textContent;
+                
+                if (!summaryText || summaryText.trim() === '') {
+                    showToast('No content to copy!', 'error');
+                    return;
+                }
+                
+                if (navigator.clipboard && window.isSecureContext) {
+                    // Modern clipboard API
+                    navigator.clipboard.writeText(summaryText).then(() => {
+                        showToast('Summary copied to clipboard!');
+                    }).catch((err) => {
+                        console.error('Clipboard API failed:', err);
+                        fallbackCopyToClipboard(summaryText);
+                    });
+                } else {
+                    // Fallback for older browsers or non-secure contexts
+                    fallbackCopyToClipboard(summaryText);
+                }
+            } catch (error) {
+                console.error('Copy to clipboard error:', error);
+                showToast('Failed to copy to clipboard!', 'error');
+            }
+        }
+        
+        function fallbackCopyToClipboard(text) {
+            try {
                 const textArea = document.createElement('textarea');
-                textArea.value = summaryText;
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
                 document.body.appendChild(textArea);
+                textArea.focus();
                 textArea.select();
-                document.execCommand('copy');
+                
+                const successful = document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showToast('Summary copied to clipboard!');
-            });
+                
+                if (successful) {
+                    showToast('Summary copied to clipboard!');
+                } else {
+                    throw new Error('execCommand failed');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                showToast('Failed to copy to clipboard!', 'error');
+            }
         }
 
         async function exportPDF() {
@@ -472,13 +544,18 @@
         async function exportWord() {
             try {
                 showToast('Generating Word document...');
+                // Get the summary content from the page
+                const summaryContent = document.getElementById('summary-content').textContent;
+                const title = '{{ title }}';
+                const language = '{{ language }}';
+                
                 const response = await fetch('/api/export/word', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
-                        summary: '{{ summary }}',
-                        title: '{{ title }}',
-                        language: '{{ language }}'
+                        summary: summaryContent,
+                        title: title,
+                        language: language
                     })
                 });
                 
@@ -487,30 +564,37 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = '{{ title.replace(" ", "_") }}.docx';
+                    a.download = title.replace(/\s+/g, '_') + '.docx';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
                     showToast('Word document downloaded successfully!');
                 } else {
-                    throw new Error('Failed to generate Word document');
+                    const errorText = await response.text();
+                    throw new Error('Failed to generate Word document: ' + errorText);
                 }
             } catch (error) {
-                showToast('Error generating Word document: ' + error.message);
+                console.error('Word export error:', error);
+                showToast('Error generating Word document: ' + error.message, 'error');
             }
         }
 
         async function exportMarkdown() {
             try {
                 showToast('Generating Markdown file...');
+                // Get the summary content from the page
+                const summaryContent = document.getElementById('summary-content').textContent;
+                const title = '{{ title }}';
+                const language = '{{ language }}';
+                
                 const response = await fetch('/api/export/markdown', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({
-                        summary: '{{ summary }}',
-                        title: '{{ title }}',
-                        language: '{{ language }}'
+                        summary: summaryContent,
+                        title: title,
+                        language: language
                     })
                 });
                 
@@ -519,17 +603,19 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = '{{ title.replace(" ", "_") }}.md';
+                    a.download = title.replace(/\s+/g, '_') + '.md';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(url);
                     showToast('Markdown file downloaded successfully!');
                 } else {
-                    throw new Error('Failed to generate Markdown file');
+                    const errorText = await response.text();
+                    throw new Error('Failed to generate Markdown file: ' + errorText);
                 }
             } catch (error) {
-                showToast('Error generating Markdown file: ' + error.message);
+                console.error('Markdown export error:', error);
+                showToast('Error generating Markdown file: ' + error.message, 'error');
             }
         }
 
@@ -546,10 +632,21 @@
             }
         }
 
-        function showToast(message) {
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
+            
+            // Update message
             toastMessage.textContent = message;
+            
+            // Update styling based on type
+            if (type === 'error') {
+                toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50';
+            } else {
+                toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50';
+            }
+            
+            // Show toast
             toast.classList.remove('translate-x-full');
             
             setTimeout(() => {
@@ -557,13 +654,58 @@
             }, 3000);
         }
 
-        function toggleTheme() {
-            // Theme toggle functionality can be implemented here
-            console.log('Theme toggle clicked');
+
+        // Continuous theme monitoring
+        function enforceTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                if (!document.body.classList.contains('dark')) {
+                    console.log('Enforcing dark theme - adding dark class');
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('gradient-bg');
+                    document.body.classList.add('gradient-bg-dark');
+                    document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
+                }
+            }
         }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize theme FIRST
+            initializeTheme();
+            
+            // Start continuous theme monitoring
+            setInterval(enforceTheme, 100);
+            
+            // Watch for changes to body class and reapply theme if needed
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        const savedTheme = localStorage.getItem('theme');
+                        if (savedTheme === 'dark' && !document.body.classList.contains('dark')) {
+                            console.log('Body class changed, re-applying dark theme');
+                            document.body.classList.add('dark');
+                            document.body.classList.remove('gradient-bg');
+                            document.body.classList.add('gradient-bg-dark');
+                            document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
+                        }
+                    }
+                });
+            });
+            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+            
+            // Double-check theme after a short delay
+            setTimeout(() => {
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme === 'dark' && !document.body.classList.contains('dark')) {
+                    console.log('Re-applying dark theme after delay');
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('gradient-bg');
+                    document.body.classList.add('gradient-bg-dark');
+                    document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
+                }
+            }, 100);
+            
             // Calculate and display statistics
             const summaryText = '{{ summary }}';
             const wordCount = summaryText.split(/\s+/).length;
@@ -572,11 +714,6 @@
             // Simulate processing time (in real app, this would come from the API)
             document.getElementById('processing-time').textContent = '2.3s';
             document.getElementById('compression-ratio').textContent = '1:5';
-        });
-
-        // Initialize theme when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeTheme();
         });
     </script>
 </body>

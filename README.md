@@ -1,4 +1,4 @@
-# Hindi LLM Summarizer Pro
+# MultiLanguage AI Text Summarizer
 
 A powerful web application for summarizing text content in both Hindi and English using advanced AI models and extractive summarization techniques. The application supports multiple input sources including manual text, URLs, PDF files, and YouTube videos.
 

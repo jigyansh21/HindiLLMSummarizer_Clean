@@ -1,5 +1,5 @@
 """
-Simple FastAPI application for Hindi LLM Summarizer Pro
+Simple FastAPI application for MultiLanguage AI Text Summarizer
 """
 from fastapi import FastAPI, Request, Form, File, UploadFile, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
@@ -19,7 +19,7 @@ from youtube_utils import YouTubeProcessor
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Hindi LLM Summarizer Pro",
+    title="MultiLanguage AI Text Summarizer",
     description="Professional AI-powered text summarization in Hindi and English",
     version="2.0.0"
 )
@@ -85,7 +85,7 @@ async def result_page(request: Request, summary: str = "", title: str = "Summary
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "message": "Hindi LLM Summarizer Pro is running!"}
+    return {"status": "healthy", "message": "MultiLanguage AI Text Summarizer is running!"}
 
 # API Endpoints
 @app.post("/api/summarize/text")
