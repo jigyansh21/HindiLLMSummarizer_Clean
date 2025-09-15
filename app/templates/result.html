@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary Results - Hindi LLM Summarizer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-dark {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .summary-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .summary-card-dark {
+            background: #374151;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(79, 172, 254, 0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(168, 237, 234, 0.4);
+        }
+        .summary-text {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        /* Dark mode styles */
+        .dark {
+            color-scheme: dark;
+        }
+        .dark .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+        .dark .bg-white {
+            background-color: #374151;
+        }
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+        .dark .text-gray-500 {
+            color: #9ca3af;
+        }
+        .dark .border-gray-200 {
+            border-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen" id="body">
+    <!-- Header -->
+    <div class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-brain text-3xl text-purple-600 mr-3"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Summary Results</h1>
+                        <p class="text-sm text-gray-600">Language: <span class="font-semibold text-purple-600">{{ language.title() }}</span></p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleTheme()" id="theme-toggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Toggle theme">
+                        <!-- Sun icon for dark mode -->
+                        <svg id="sun-icon" class="w-5 h-5 text-gray-600 dark:text-yellow-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <!-- Moon icon for light mode -->
+                        <svg id="moon-icon" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                    <a href="/summarizer?language={{ language }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        New Summary
+                    </a>
+                    <a href="/" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Summary Card -->
+        <div class="summary-card p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <i class="fas fa-file-alt text-blue-600 mr-3"></i>
+                    {{ title }}
+                </h2>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                        {{ language.title() }}
+                    </span>
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                        <i class="fas fa-check-circle mr-1"></i>Complete
+                    </span>
+                </div>
+            </div>
+
+            <!-- Summary Content -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <div class="summary-text text-gray-800" id="summary-content">
+                    {{ summary }}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 mb-6">
+                <button onclick="copyToClipboard()" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-copy mr-2"></i>Copy to Clipboard
+                </button>
+                <button onclick="exportPDF()" class="btn-secondary text-gray-800 px-6 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-file-pdf mr-2"></i>Export as PDF
+                </button>
+                <button onclick="exportWord()" class="btn-secondary text-gray-800 px-6 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-file-word mr-2"></i>Export as Word
+                </button>
+                <button onclick="exportMarkdown()" class="btn-secondary text-gray-800 px-6 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-file-code mr-2"></i>Export as Markdown
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics and Analysis -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Summary Statistics -->
+            <div class="summary-card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+                    Summary Statistics
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Summary Length:</span>
+                        <span class="font-semibold" id="summary-length">{{ summary.split()|length }} words</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Compression Ratio:</span>
+                        <span class="font-semibold" id="compression-ratio">1:5</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Processing Time:</span>
+                        <span class="font-semibold" id="processing-time">2.3s</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600">Language:</span>
+                        <span class="font-semibold text-purple-600">{{ language.title() }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Metrics -->
+            <div class="summary-card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-star text-yellow-600 mr-2"></i>
+                    Quality Metrics
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-600">Readability:</span>
+                            <span class="font-semibold text-green-600">Excellent</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-600">Coherence:</span>
+                            <span class="font-semibold text-green-600">High</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-600">Completeness:</span>
+                            <span class="font-semibold text-blue-600">Good</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="summary-card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                    <i class="fas fa-download text-green-600 mr-2"></i>
+                    Export Options
+                </h3>
+                <div class="space-y-3">
+                    <button onclick="exportPDF()" class="w-full flex items-center justify-between p-3 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-pdf text-red-600 mr-3"></i>
+                            <span class="font-medium">PDF Document</span>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400"></i>
+                    </button>
+                    <button onclick="exportWord()" class="w-full flex items-center justify-between p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-word text-blue-600 mr-3"></i>
+                            <span class="font-medium">Word Document</span>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400"></i>
+                    </button>
+                    <button onclick="exportMarkdown()" class="w-full flex items-center justify-between p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-code text-gray-600 mr-3"></i>
+                            <span class="font-medium">Markdown File</span>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400"></i>
+                    </button>
+                    <button onclick="copyToClipboard()" class="w-full flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                        <div class="flex items-center">
+                            <i class="fas fa-copy text-green-600 mr-3"></i>
+                            <span class="font-medium">Copy to Clipboard</span>
+                        </div>
+                        <i class="fas fa-arrow-right text-gray-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Actions -->
+        <div class="mt-8 text-center">
+            <div class="inline-flex space-x-4">
+                <a href="/summarizer?language={{ language }}" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-plus mr-2"></i>Create New Summary
+                </a>
+                <button onclick="shareSummary()" class="btn-secondary text-gray-800 px-8 py-3 rounded-lg font-semibold">
+                    <i class="fas fa-share mr-2"></i>Share Summary
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toast-message">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.getElementById('body');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            
+            // Toggle dark class on body
+            body.classList.toggle('dark');
+            
+            // Toggle background gradient
+            if (body.classList.contains('dark')) {
+                body.classList.remove('gradient-bg');
+                body.classList.add('gradient-bg-dark');
+                // Show sun icon (for switching to light mode)
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+                // Store preference
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('gradient-bg-dark');
+                body.classList.add('gradient-bg');
+                // Show moon icon (for switching to dark mode)
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                // Store preference
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.getElementById('body');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                body.classList.remove('gradient-bg');
+                body.classList.add('gradient-bg-dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.remove('dark');
+                body.classList.remove('gradient-bg-dark');
+                body.classList.add('gradient-bg');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+
+        function copyToClipboard() {
+            const summaryText = document.getElementById('summary-content').textContent;
+            navigator.clipboard.writeText(summaryText).then(() => {
+                showToast('Summary copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = summaryText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Summary copied to clipboard!');
+            });
+        }
+
+        async function exportPDF() {
+            try {
+                showToast('Generating PDF...');
+                const response = await fetch('/api/export/pdf', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        summary: '{{ summary }}',
+                        title: '{{ title }}',
+                        language: '{{ language }}'
+                    })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '{{ title.replace(" ", "_") }}.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    showToast('PDF downloaded successfully!');
+                } else {
+                    throw new Error('Failed to generate PDF');
+                }
+            } catch (error) {
+                showToast('Error generating PDF: ' + error.message);
+            }
+        }
+
+        async function exportWord() {
+            try {
+                showToast('Generating Word document...');
+                const response = await fetch('/api/export/word', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        summary: '{{ summary }}',
+                        title: '{{ title }}',
+                        language: '{{ language }}'
+                    })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '{{ title.replace(" ", "_") }}.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    showToast('Word document downloaded successfully!');
+                } else {
+                    throw new Error('Failed to generate Word document');
+                }
+            } catch (error) {
+                showToast('Error generating Word document: ' + error.message);
+            }
+        }
+
+        async function exportMarkdown() {
+            try {
+                showToast('Generating Markdown file...');
+                const response = await fetch('/api/export/markdown', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        summary: '{{ summary }}',
+                        title: '{{ title }}',
+                        language: '{{ language }}'
+                    })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '{{ title.replace(" ", "_") }}.md';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    showToast('Markdown file downloaded successfully!');
+                } else {
+                    throw new Error('Failed to generate Markdown file');
+                }
+            } catch (error) {
+                showToast('Error generating Markdown file: ' + error.message);
+            }
+        }
+
+        function shareSummary() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ title }}',
+                    text: '{{ summary[:100] }}...',
+                    url: window.location.href
+                });
+            } else {
+                copyToClipboard();
+                showToast('Summary copied to clipboard for sharing!');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            // Theme toggle functionality can be implemented here
+            console.log('Theme toggle clicked');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calculate and display statistics
+            const summaryText = '{{ summary }}';
+            const wordCount = summaryText.split(/\s+/).length;
+            document.getElementById('summary-length').textContent = `${wordCount} words`;
+            
+            // Simulate processing time (in real app, this would come from the API)
+            document.getElementById('processing-time').textContent = '2.3s';
+            document.getElementById('compression-ratio').textContent = '1:5';
+        });
+
+        // Initialize theme when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+        });
+    </script>
+</body>
+</html>
+

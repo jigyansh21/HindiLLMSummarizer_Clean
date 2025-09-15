@@ -397,8 +397,16 @@ def extract_text_from_url(url):
         article = Article(url, language="hi")
         article.download()
         article.parse()
-        return article.text.strip()
-    except:
+        text = article.text.strip()
+        if not text:
+            # Fallback to English if Hindi extraction fails
+            article = Article(url, language="en")
+            article.download()
+            article.parse()
+            text = article.text.strip()
+        return text
+    except Exception as e:
+        st.error(f"Error extracting from URL: {str(e)}")
         return ""
 
 # Professional PDF generator for summary
@@ -809,7 +817,7 @@ st.markdown("---")
 st.markdown("""
 <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; margin-top: 2rem;">
     <h3>🚀 Hindi LLM Summarizer Pro</h3>
-    <p style="margin: 0.5rem 0;">Professional AI-Powered Text Summarization Platform</p>
+    <p style="margin: 0.5rem 0;"> AI-Powered Text Summarization Platform</p>
     <p style="margin: 0.5rem 0; font-size: 0.9rem;">Developed by <strong>Jigyansh</strong> | ECE Undergraduate | Thapar Institute of Engineering Technology</p>
     <p style="margin: 0.5rem 0; font-size: 0.8rem;">Powered by Google's T5 AI Model | Built with Streamlit</p>
 </div>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarizer Dashboard - Hindi LLM Summarizer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/heroicons@2.0.18/24/outline/index.js" type="module"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-bg-dark {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        .tab-inactive {
+            background: white;
+            color: #6b7280;
+        }
+        .tab-inactive-dark {
+            background: #374151;
+            color: #d1d5db;
+        }
+        .input-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .input-card-dark {
+            background: #374151;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(79, 172, 254, 0.4);
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        /* Dark mode styles */
+        .dark {
+            color-scheme: dark;
+        }
+        .dark .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+        .dark .bg-white {
+            background-color: #374151;
+        }
+        .dark .bg-gray-100 {
+            background-color: #4b5563;
+        }
+        .dark .bg-gray-200 {
+            background-color: #6b7280;
+        }
+        .dark .border-gray-300 {
+            border-color: #6b7280;
+        }
+        .dark .text-gray-700 {
+            color: #d1d5db;
+        }
+        .dark .text-gray-500 {
+            color: #9ca3af;
+        }
+        .dark .bg-blue-50 {
+            background-color: #1e3a8a;
+        }
+        .dark .border-blue-200 {
+            border-color: #3b82f6;
+        }
+        .dark .text-blue-800 {
+            color: #dbeafe;
+        }
+        .dark .bg-red-50 {
+            background-color: #7f1d1d;
+        }
+        .dark .border-red-200 {
+            border-color: #ef4444;
+        }
+        .dark .text-red-800 {
+            color: #fecaca;
+        }
+        .dark .bg-gray-50 {
+            background-color: #4b5563;
+        }
+        .dark .text-gray-800 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen" id="body">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-brain text-3xl text-purple-600 mr-3"></i>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Hindi LLM Summarizer Pro</h1>
+                        <p class="text-sm text-gray-600">Language: <span class="font-semibold text-purple-600">{{ language.title() }}</span></p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleTheme()" id="theme-toggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors" title="Toggle theme">
+                        <!-- Sun icon for dark mode -->
+                        <svg id="sun-icon" class="w-5 h-5 text-gray-600 dark:text-yellow-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <!-- Moon icon for light mode -->
+                        <svg id="moon-icon" class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                    <a href="/" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Input Type Tabs -->
+        <div class="mb-8">
+            <div class="flex flex-wrap gap-2 bg-white rounded-xl p-2 shadow-lg">
+                <button onclick="switchTab('text')" id="tab-text" class="tab-active px-6 py-3 rounded-lg font-medium transition-all">
+                    <i class="fas fa-keyboard mr-2"></i>Text
+                </button>
+                <button onclick="switchTab('url')" id="tab-url" class="tab-inactive px-6 py-3 rounded-lg font-medium transition-all">
+                    <i class="fas fa-link mr-2"></i>URL
+                </button>
+                <button onclick="switchTab('pdf')" id="tab-pdf" class="tab-inactive px-6 py-3 rounded-lg font-medium transition-all">
+                    <i class="fas fa-file-pdf mr-2"></i>PDF
+                </button>
+                <button onclick="switchTab('youtube')" id="tab-youtube" class="tab-inactive px-6 py-3 rounded-lg font-medium transition-all">
+                    <i class="fab fa-youtube mr-2"></i>YouTube
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Input Section -->
+            <div class="lg:col-span-2">
+                <div class="input-card dark:input-card-dark p-8">
+                    <!-- Text Input Tab -->
+                    <div id="content-text" class="tab-content">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                            <i class="fas fa-keyboard text-blue-600 mr-2"></i>
+                            Manual Text Input
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Enter your text (Maximum 1,200 words)
+                                </label>
+                                <textarea 
+                                    id="text-input" 
+                                    rows="12" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                    placeholder="Type or paste your text here..."
+                                ></textarea>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span id="word-count" class="text-sm text-gray-500">Words: 0/1,200</span>
+                                    <span id="char-count" class="text-sm text-gray-500">Characters: 0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- URL Input Tab -->
+                    <div id="content-url" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                            <i class="fas fa-link text-green-600 mr-2"></i>
+                            URL Article Extraction
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Paste the article URL
+                                </label>
+                                <input 
+                                    type="url" 
+                                    id="url-input" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                    placeholder="https://example.com/article"
+                                />
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-info-circle text-blue-600 mt-1 mr-3"></i>
+                                    <div class="text-sm text-blue-800">
+                                        <p class="font-medium mb-1">Supported URLs:</p>
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>News articles and blog posts</li>
+                                            <li>Wikipedia pages</li>
+                                            <li>Most text-based web content</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PDF Input Tab -->
+                    <div id="content-pdf" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                            <i class="fas fa-file-pdf text-red-600 mr-2"></i>
+                            PDF Document Upload
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Upload PDF file (Maximum 15 pages)
+                                </label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
+                                    <input type="file" id="pdf-input" accept=".pdf" class="hidden" />
+                                    <label for="pdf-input" class="cursor-pointer">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <p class="text-lg font-medium text-gray-700 mb-2">Click to upload PDF</p>
+                                        <p class="text-sm text-gray-500">or drag and drop your file here</p>
+                                    </label>
+                                </div>
+                                <div id="pdf-info" class="mt-4 hidden">
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="font-medium text-gray-800" id="pdf-name"></p>
+                                                <p class="text-sm text-gray-600" id="pdf-size"></p>
+                                            </div>
+                                            <button onclick="clearPDF()" class="text-red-600 hover:text-red-800">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube Input Tab -->
+                    <div id="content-youtube" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                            <i class="fab fa-youtube text-red-600 mr-2"></i>
+                            YouTube Video Processing
+                        </h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Paste YouTube video URL
+                                </label>
+                                <input 
+                                    type="url" 
+                                    id="youtube-input" 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                />
+                            </div>
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-red-600 mt-1 mr-3"></i>
+                                    <div class="text-sm text-red-800">
+                                        <p class="font-medium mb-1">Note:</p>
+                                        <p>YouTube processing requires the video to have captions/transcripts available. Not all videos support this feature.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Length Selection -->
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Summary Length</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="summary-length" value="short" class="mr-3" checked>
+                                <div>
+                                    <div class="font-medium text-gray-800">Short</div>
+                                    <div class="text-sm text-gray-500">~50 words</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="summary-length" value="medium" class="mr-3">
+                                <div>
+                                    <div class="font-medium text-gray-800">Medium</div>
+                                    <div class="text-sm text-gray-500">~100 words</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="summary-length" value="long" class="mr-3">
+                                <div>
+                                    <div class="font-medium text-gray-800">Long</div>
+                                    <div class="text-sm text-gray-500">~200 words</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="summary-length" value="auto" class="mr-3">
+                                <div>
+                                    <div class="font-medium text-gray-800">Auto</div>
+                                    <div class="text-sm text-gray-500">AI decides</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-8">
+                        <button 
+                            onclick="processInput()" 
+                            id="submit-btn"
+                            class="w-full btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg"
+                        >
+                            <i class="fas fa-magic mr-2"></i>
+                            Generate Summary
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Language Info -->
+                <div class="input-card dark:input-card-dark p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-language text-purple-600 mr-2"></i>
+                        Language Settings
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Current Language:</span>
+                            <span class="font-semibold text-purple-600">{{ language.title() }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Model Status:</span>
+                            <span class="text-green-600 font-semibold">Ready</span>
+                        </div>
+                        <a href="/" class="block text-center text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-edit mr-1"></i>Change Language
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Processing Stats -->
+                <div class="input-card dark:input-card-dark p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-chart-bar text-blue-600 mr-2"></i>
+                        Processing Stats
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Documents Processed:</span>
+                            <span class="font-semibold" id="doc-count">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Total Words:</span>
+                            <span class="font-semibold" id="word-count-total">0</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600">Avg. Processing Time:</span>
+                            <span class="font-semibold" id="avg-time">0s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Tips -->
+                <div class="input-card dark:input-card-dark p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                        <i class="fas fa-lightbulb text-yellow-600 mr-2"></i>
+                        Quick Tips
+                    </h3>
+                    <div class="space-y-3 text-sm text-gray-600">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>For best results, use clear, well-structured text</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>PDFs work best with text-based content</span>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                            <span>YouTube videos need captions/transcripts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="loading-spinner rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Processing Your Request</h3>
+                <p id="loading-text" class="text-gray-600">Please wait while we process your content...</p>
+                <div class="mt-4 bg-gray-200 rounded-full h-2">
+                    <div id="progress-bar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'text';
+        let processingStats = {
+            documents: 0,
+            words: 0,
+            totalTime: 0
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            updateWordCount();
+            document.getElementById('text-input').addEventListener('input', updateWordCount);
+            document.getElementById('pdf-input').addEventListener('change', handlePDFUpload);
+        });
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+                btn.className = btn.className.replace('tab-active', 'tab-inactive');
+            });
+            document.getElementById(`tab-${tab}`).className = document.getElementById(`tab-${tab}`).className.replace('tab-inactive', 'tab-active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(`content-${tab}`).classList.remove('hidden');
+
+            currentTab = tab;
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('text-input').value;
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+            const chars = text.length;
+            
+            document.getElementById('word-count').textContent = `Words: ${words}/1,200`;
+            document.getElementById('char-count').textContent = `Characters: ${chars}`;
+            
+            if (words > 1200) {
+                document.getElementById('word-count').className = 'text-sm text-red-500';
+            } else {
+                document.getElementById('word-count').className = 'text-sm text-gray-500';
+            }
+        }
+
+        function handlePDFUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('pdf-name').textContent = file.name;
+                document.getElementById('pdf-size').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                document.getElementById('pdf-info').classList.remove('hidden');
+            }
+        }
+
+        function clearPDF() {
+            document.getElementById('pdf-input').value = '';
+            document.getElementById('pdf-info').classList.add('hidden');
+        }
+
+        async function processInput() {
+            const submitBtn = document.getElementById('submit-btn');
+            const loadingModal = document.getElementById('loading-modal');
+            const loadingText = document.getElementById('loading-text');
+            const progressBar = document.getElementById('progress-bar');
+
+            // Validate input
+            if (!validateInput()) {
+                return;
+            }
+
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            loadingModal.classList.remove('hidden');
+
+            try {
+                let result;
+                const summaryLength = document.querySelector('input[name="summary-length"]:checked').value;
+
+                if (currentTab === 'text') {
+                    result = await processText(summaryLength);
+                } else if (currentTab === 'url') {
+                    result = await processURL(summaryLength);
+                } else if (currentTab === 'pdf') {
+                    result = await processPDF(summaryLength);
+                } else if (currentTab === 'youtube') {
+                    result = await processYouTube(summaryLength);
+                }
+
+                // Update stats
+                updateStats(result);
+
+                // Redirect to results
+                const params = new URLSearchParams({
+                    summary: result.summary,
+                    title: result.title || 'Summary',
+                    language: '{{ language }}'
+                });
+                window.location.href = `/result?${params.toString()}`;
+
+            } catch (error) {
+                alert(`Error: ${error.message}`);
+            } finally {
+                // Hide loading
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-magic mr-2"></i>Generate Summary';
+                loadingModal.classList.add('hidden');
+            }
+        }
+
+        function validateInput() {
+            if (currentTab === 'text') {
+                const text = document.getElementById('text-input').value.trim();
+                if (!text) {
+                    alert('Please enter some text to summarize.');
+                    return false;
+                }
+                const words = text.split(/\s+/).length;
+                if (words > 1200) {
+                    alert('Text exceeds 1,200 words. Please shorten your text.');
+                    return false;
+                }
+            } else if (currentTab === 'url') {
+                const url = document.getElementById('url-input').value.trim();
+                if (!url) {
+                    alert('Please enter a URL.');
+                    return false;
+                }
+            } else if (currentTab === 'pdf') {
+                const file = document.getElementById('pdf-input').files[0];
+                if (!file) {
+                    alert('Please select a PDF file.');
+                    return false;
+                }
+            } else if (currentTab === 'youtube') {
+                const url = document.getElementById('youtube-input').value.trim();
+                if (!url) {
+                    alert('Please enter a YouTube URL.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        async function processText(summaryLength) {
+            const text = document.getElementById('text-input').value;
+            const response = await fetch('/api/summarize/text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: text,
+                    language: '{{ language }}',
+                    summary_length: summaryLength
+                })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.detail);
+            return result;
+        }
+
+        async function processURL(summaryLength) {
+            const url = document.getElementById('url-input').value;
+            const response = await fetch('/api/summarize/url', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: url,
+                    language: '{{ language }}',
+                    summary_length: summaryLength
+                })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.detail);
+            return result;
+        }
+
+        async function processPDF(summaryLength) {
+            const file = document.getElementById('pdf-input').files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('language', '{{ language }}');
+            formData.append('summary_length', summaryLength);
+
+            const response = await fetch('/api/summarize/pdf', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.detail);
+            return result;
+        }
+
+        async function processYouTube(summaryLength) {
+            const url = document.getElementById('youtube-input').value;
+            const response = await fetch('/api/summarize/youtube', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: url,
+                    language: '{{ language }}',
+                    summary_length: summaryLength
+                })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.detail);
+            return result;
+        }
+
+        function updateStats(result) {
+            processingStats.documents++;
+            processingStats.words += result.original_length || 0;
+            processingStats.totalTime += result.processing_time || 0;
+
+            document.getElementById('doc-count').textContent = processingStats.documents;
+            document.getElementById('word-count-total').textContent = processingStats.words.toLocaleString();
+            document.getElementById('avg-time').textContent = 
+                processingStats.documents > 0 ? 
+                `${(processingStats.totalTime / processingStats.documents).toFixed(1)}s` : '0s';
+        }
+
+        function toggleTheme() {
+            const body = document.getElementById('body');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            
+            // Toggle dark class on body
+            body.classList.toggle('dark');
+            
+            // Toggle background gradient
+            if (body.classList.contains('dark')) {
+                body.classList.remove('gradient-bg');
+                body.classList.add('gradient-bg-dark');
+                // Show sun icon (for switching to light mode)
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+                // Store preference
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('gradient-bg-dark');
+                body.classList.add('gradient-bg');
+                // Show moon icon (for switching to dark mode)
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                // Store preference
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.getElementById('body');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                body.classList.remove('gradient-bg');
+                body.classList.add('gradient-bg-dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.remove('dark');
+                body.classList.remove('gradient-bg-dark');
+                body.classList.add('gradient-bg');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
+
