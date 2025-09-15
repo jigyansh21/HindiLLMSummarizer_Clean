@@ -1,269 +1,292 @@
-# 📝 Hindi LLM Summarizer Pro
+# Hindi LLM Summarizer Pro
 
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?style=flat-square&logo=github)](https://github.com/jigyansh21/HindiLLMSummarizer_Clean)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red?style=flat-square&logo=streamlit)](https://streamlit.io)
-[![AI](https://img.shields.io/badge/AI-Powered-green?style=flat-square&logo=openai)](https://huggingface.co/csebuetnlp/mT5_multilingual_XLSum)
-[![Professional](https://img.shields.io/badge/Professional-Grade-orange?style=flat-square&logo=star)](https://github.com/jigyansh21/HindiLLMSummarizer_Clean)
+A powerful web application for summarizing text content in both Hindi and English using advanced AI models and extractive summarization techniques. The application supports multiple input sources including manual text, URLs, PDF files, and YouTube videos.
 
-🚀 **Professional AI-Powered Text Summarization Platform** with advanced analytics, real-time processing, and enterprise-grade features for Hindi language content.
+## ✨ Features
 
-## ✨ **What Makes This Professional?**
+### 🌐 Multi-Language Support
+- **Hindi & English** summarization
+- Automatic language detection
+- Language-specific processing
 
-- 🎨 **Modern UI/UX**: Beautiful, responsive design with professional styling
-- 📊 **Advanced Analytics**: Real-time text analysis and quality metrics
-- ⚡ **Performance Tracking**: Processing statistics and performance monitoring
-- 🔄 **Smart Processing**: Intelligent text chunking for large documents
-- 📈 **Quality Metrics**: Text complexity, readability, and compression analysis
-- 🎯 **Professional Features**: Progress bars, loading animations, error handling
-- 💾 **Multiple Export Options**: PDF, clipboard, and formatted text output
-- 📱 **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+### 📝 Multiple Input Sources
+- **Manual Text Input** - Direct text entry with word/character limits
+- **URL Processing** - Extract and summarize content from web pages
+- **PDF Documents** - Upload and process PDF files
+- **YouTube Videos** - Extract transcripts and generate summaries
 
-## 🔗 Repository
+### 🎯 Smart Summarization
+- **Extractive Summarization** - Advanced sentence selection algorithm
+- **Multiple Length Options**:
+  - Short (25% of original)
+  - Medium (40% of original) 
+  - Long (60% of original)
+  - Auto (intelligent length selection)
+- **Dynamic Word Targeting** - Optimized for different content lengths
 
-**GitHub Repository**: [https://github.com/jigyansh21/HindiLLMSummarizer_Clean](https://github.com/jigyansh21/HindiLLMSummarizer_Clean)
+### 🎨 Modern UI/UX
+- **Dark/Light Theme Toggle** - Seamless theme switching with persistence
+- **Responsive Design** - Works on desktop, tablet, and mobile
+- **Hero Icons** - Beautiful, consistent iconography
+- **Gradient Backgrounds** - Modern visual design
+- **Real-time Statistics** - Processing stats and word counts
 
-## 📑 Table of Contents
-
-- [Features](#-features)
-- [Screenshots](#-screenshots)
-- [Use Cases](#-use-cases)
-- [Quick Start](#-quick-start)
-- [Requirements](#-requirements)
-- [Usage](#-usage)
-- [Technical Details](#-technical-details)
-- [Project Structure](#-project-structure)
-- [Configuration](#️-configuration)
-- [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Author](#️-author)
-- [Acknowledgments](#-acknowledgments)
-- [Support](#-support)
-- [Live Demo](#-live-demo)
-- [Development Status](#-development-status)
-- [Project Stats](#-project-stats)
-
-## 🌟 Features
-
-- **Multiple Input Sources**:
-  - Manual Hindi text input
-  - URL article extraction
-  - PDF document processing
-- **Flexible Summary Lengths**:
-  - Short (~15-25 words)
-  - Medium (~30-50 words) 
-  - Long (~80+ words)
-- **PDF Export**: Download summaries as PDF with proper Hindi font support
-- **Real-time Processing**: Fast summarization using pre-trained multilingual models
-- **User-friendly Interface**: Clean, intuitive Streamlit web interface
-
-## 📸 Screenshots
-
-> *Screenshots of the application interface will be added here*
-
-## 🎯 Use Cases
-
-- **Academic Research**: Summarize Hindi research papers and articles
-- **News Analysis**: Quick summaries of Hindi news articles
-- **Document Processing**: Extract key points from Hindi PDFs
-- **Content Creation**: Generate concise summaries for social media or reports
-- **Language Learning**: Practice Hindi comprehension through summarization
+### 📤 Export Options
+- **PDF Export** - Generate PDF summaries
+- **Word Document** - Create .docx files
+- **Markdown** - Export as .md files
+- **Copy to Clipboard** - Quick text copying
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
 - Python 3.8 or higher
-- pip (Python package installer)
-- 4GB+ RAM (recommended for optimal performance)
-- 2GB+ free disk space (for model caching)
-- Internet connection (for initial model download)
+- pip package manager
 
 ### Installation
 
-1. **Clone the repository**:
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/jigyansh21/HindiLLMSummarizer_Clean.git
+   git clone <repository-url>
    cd HindiLLMSummarizer_Clean
    ```
 
-2. **Create a virtual environment** (recommended):
+2. **Create virtual environment**
    ```bash
    python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-   
-   # On macOS/Linux
-   source venv/bin/activate
    ```
 
-3. **Install dependencies**:
+3. **Activate virtual environment**
+   - **Windows:**
+     ```bash
+     venv\Scripts\activate
+     ```
+   - **macOS/Linux:**
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Run the application**:
+5. **Run the application**
    ```bash
-   streamlit run app.py
+   python run_app.py
    ```
 
-5. **Open your browser** and navigate to `http://localhost:8501`
+6. **Open in browser**
+   Navigate to `http://127.0.0.1:8000`
 
 ## 📋 Requirements
 
-The application requires the following Python packages:
+### Core Dependencies
+- **FastAPI** - Web framework
+- **Uvicorn** - ASGI server
+- **Transformers** - Hugging Face models
+- **PyTorch** - Deep learning framework
+- **NLTK** - Natural language processing
+- **BeautifulSoup4** - Web scraping
+- **PyMuPDF** - PDF processing
+- **python-docx** - Word document generation
+- **youtube-transcript-api** - YouTube transcript extraction
 
-- `streamlit==1.35.0` - Web application framework
-- `transformers==4.41.1` - Hugging Face transformers for ML models
-- `PyMuPDF==1.24.5` - PDF processing library
-- `newspaper3k==0.2.8` - Article extraction from URLs
-- `lxml==5.2.1` - XML/HTML processing
+### Optional Dependencies
+- **T5 Model** - For advanced summarization (auto-downloaded)
+- **Font Tools** - For Devanagari font support
 
-## 🎯 Usage
-
-### 1. Manual Text Input
-- Select "Manual Hindi Text" option
-- Type or paste your Hindi text (max 1200 words)
-- Choose your preferred summary length
-- Click "Generate Hindi Summary"
-
-### 2. URL Article Extraction
-- Select "Enter Article URL" option
-- Paste the URL of the article you want to summarize
-- The app will automatically extract the content
-- Choose summary length and generate
-
-### 3. PDF Document Processing
-- Select "Upload PDF" option
-- Upload a PDF file (max 20 pages recommended)
-- The app will extract text from the PDF
-- Generate your summary
-
-### 4. Export Summary
-- After generating a summary, click "Download Summary as PDF"
-- The PDF will be generated with proper Hindi font support
-
-## 🔧 Technical Details
-
-### Model Information
-- **Model**: `csebuetnlp/mT5_multilingual_XLSum`
-- **Type**: Multilingual T5 (Text-to-Text Transfer Transformer)
-- **Capabilities**: Supports multiple languages including Hindi
-- **Architecture**: Encoder-decoder transformer model
-- **Model Size**: ~1.2B parameters
-- **Training Data**: Multilingual news articles and summaries
-- **Performance**: Optimized for extractive and abstractive summarization
-
-### Key Components
-
-1. **Text Processing**:
-   - PDF text extraction using PyPDF2
-   - URL content extraction using newspaper3k
-   - Text preprocessing and tokenization
-
-2. **Summarization Engine**:
-   - Pre-trained multilingual T5 model
-   - Configurable summary lengths
-   - Beam search decoding for quality summaries
-
-3. **PDF Generation**:
-   - Custom PDF creation with Hindi font support
-   - Uses Noto Sans Devanagari font for proper rendering
-   - Multi-line text handling
-
-## 📁 Project Structure
+## 🏗️ Project Structure
 
 ```
 HindiLLMSummarizer_Clean/
-├── app.py                 # Main Streamlit application
-├── requirements.txt       # Python dependencies
-├── fonts/                # Hindi font files
-│   ├── NotoSansDevanagari-Regular.ttf
-│   ├── NotoSansDevanagari-Regular.pkl
-│   └── NotoSansDevanagari-Regular.cw127.pkl
-├── .gitignore            # Git ignore rules
-└── README.md             # This file
+├── app/
+│   ├── main.py                 # Main FastAPI application
+│   ├── simple_main.py          # Simplified FastAPI app
+│   ├── summarizer.py           # Core summarization logic
+│   ├── pdf_utils.py            # PDF processing utilities
+│   ├── youtube_utils.py        # YouTube transcript extraction
+│   ├── templates/              # HTML templates
+│   │   ├── index.html          # Language selection page
+│   │   ├── summarizer.html     # Main dashboard
+│   │   └── result.html         # Results display
+│   ├── static/                 # Static assets
+│   │   └── styles.css          # Custom CSS
+│   └── requirements.txt        # Python dependencies
+├── fonts/                      # Devanagari font files
+├── run_app.py                  # Application launcher
+├── requirements.txt            # Root dependencies
+└── README.md                   # This file
 ```
 
-## 🛠️ Configuration
+## 🔧 Configuration
 
 ### Environment Variables
-The application sets the following environment variable for optimal performance:
-- `PYTORCH_JIT=0` - Disables PyTorch JIT compilation for Windows compatibility
+- No environment variables required
+- All configuration is handled internally
 
-### Font Configuration
-The application uses Noto Sans Devanagari font for proper Hindi text rendering in PDFs. The font files are included in the `fonts/` directory.
+### Model Configuration
+- **T5 Model**: Automatically downloads on first use
+- **Extractive Summarization**: Primary method for reliability
+- **Language Models**: Optimized for Hindi and English
 
-## 🚨 Troubleshooting
+## 📖 Usage Guide
+
+### 1. Language Selection
+- Choose between Hindi or English
+- Language affects processing and UI display
+- Can be changed at any time
+
+### 2. Text Summarization
+1. Select "Text" tab
+2. Enter your text (max 1,200 words)
+3. Choose summary length
+4. Click "Generate Summary"
+
+### 3. URL Summarization
+1. Select "URL" tab
+2. Paste the webpage URL
+3. Choose summary length
+4. Click "Generate Summary"
+
+### 4. PDF Summarization
+1. Select "PDF" tab
+2. Upload PDF file
+3. Choose summary length
+4. Click "Generate Summary"
+
+### 5. YouTube Summarization
+1. Select "YouTube" tab
+2. Paste YouTube video URL
+3. Choose summary length
+4. Click "Generate Summary"
+
+### 6. Export Options
+- **PDF**: Download as PDF file
+- **Word**: Download as .docx file
+- **Markdown**: Download as .md file
+- **Copy**: Copy to clipboard
+
+## 🎨 Theme Customization
+
+### Dark Mode
+- Click the sun/moon icon in the top-right
+- Theme preference is saved automatically
+- Consistent across all pages
+
+### Light Mode
+- Clean, modern light theme
+- High contrast for readability
+- Professional appearance
+
+## 🔍 API Endpoints
+
+### Web Pages
+- `GET /` - Language selection
+- `GET /summarizer` - Main dashboard
+- `GET /result` - Summary results
+
+### API Endpoints
+- `POST /api/summarize/text` - Text summarization
+- `POST /api/summarize/url` - URL summarization
+- `POST /api/summarize/pdf` - PDF summarization
+- `POST /api/summarize/youtube` - YouTube summarization
+- `POST /api/export/pdf` - PDF export
+- `POST /api/export/word` - Word export
+- `POST /api/export/markdown` - Markdown export
+
+## 🛠️ Technical Details
+
+### Summarization Algorithm
+1. **Text Preprocessing** - Clean and normalize input
+2. **Sentence Splitting** - Split into sentences (supports Hindi punctuation)
+3. **Scoring** - Calculate sentence importance
+4. **Selection** - Choose optimal sentences for summary
+5. **Post-processing** - Format and polish output
+
+### Language Support
+- **Hindi**: Full Devanagari script support
+- **English**: Standard Latin script
+- **Mixed Content**: Handles bilingual text
+
+### Performance
+- **Fast Processing** - Optimized algorithms
+- **Memory Efficient** - Handles large documents
+- **Scalable** - Supports multiple concurrent users
+
+## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **Model Loading Issues**:
-   - Ensure you have a stable internet connection for initial model download
-   - The model will be cached locally after first download
+1. **YouTube videos not working**
+   - Ensure video has captions/transcripts
+   - Check internet connection
+   - Try different video
 
-2. **PDF Generation Errors**:
-   - Verify that font files are present in the `fonts/` directory
-   - Check file permissions for the fonts folder
+2. **PDF processing fails**
+   - Ensure PDF is not password protected
+   - Check file size (max 10MB)
+   - Verify PDF is not corrupted
 
-3. **Memory Issues**:
-   - For large PDFs, consider reducing the number of pages
-   - Close other applications to free up memory
+3. **Theme not switching**
+   - Clear browser cache
+   - Check browser console for errors
+   - Ensure JavaScript is enabled
 
-4. **URL Extraction Failures**:
-   - Some websites may block automated content extraction
-   - Try different URLs or use manual text input as alternative
+4. **Model loading issues**
+   - Check internet connection
+   - Ensure sufficient disk space
+   - Restart application
+
+### Error Messages
+- **"No transcript available"** - YouTube video lacks captions
+- **"PDF processing failed"** - PDF file issues
+- **"Text too long"** - Exceeded word limit
+- **"Invalid URL"** - Malformed web address
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](https://github.com/jigyansh21/HindiLLMSummarizer_Clean/blob/main/LICENSE).
-
-## 👨‍💻 Author
-
-**Jigyansh**  
-ECE Undergraduate  
-Thapar Institute of Engineering Technology
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
-- [Hugging Face](https://huggingface.co/) for the pre-trained models
-- [Streamlit](https://streamlit.io/) for the web framework
-- [Google Fonts](https://fonts.google.com/) for the Noto Sans Devanagari font
+- **Hugging Face** - For transformer models
+- **FastAPI** - For the web framework
+- **Tailwind CSS** - For styling
+- **Heroicons** - For beautiful icons
+- **YouTube Transcript API** - For video processing
 
 ## 📞 Support
 
-If you encounter any issues or have questions, please open an issue on the [GitHub repository](https://github.com/jigyansh21/HindiLLMSummarizer_Clean/issues).
+For support, issues, or feature requests:
+- Create an issue on GitHub
+- Check the troubleshooting section
+- Review the documentation
 
-## 🌐 Live Demo
+## 🔄 Version History
 
-You can try the application by running it locally following the installation instructions above.
+### v2.0.0 (Current)
+- ✅ Dark/Light theme toggle
+- ✅ YouTube transcript processing
+- ✅ Enhanced extractive summarization
+- ✅ Improved UI/UX with Heroicons
+- ✅ Better error handling
+- ✅ Cross-page theme persistence
 
-## 🚧 Development Status
-
-- ✅ **Core Functionality**: Complete
-- ✅ **PDF Processing**: Complete
-- ✅ **URL Extraction**: Complete
-- ✅ **Hindi Font Support**: Complete
-- 🔄 **Performance Optimization**: In Progress
-- 📋 **Future Features**: 
-  - Batch processing
-  - API endpoint
-  - Docker containerization
-  - Multiple language support expansion
-
-## 📊 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/jigyansh21/HindiLLMSummarizer_Clean?style=social)
-![GitHub forks](https://img.shields.io/github/forks/jigyansh21/HindiLLMSummarizer_Clean?style=social)
-![GitHub issues](https://img.shields.io/github/issues/jigyansh21/HindiLLMSummarizer_Clean)
-![GitHub last commit](https://img.shields.io/github/last-commit/jigyansh21/HindiLLMSummarizer_Clean)
+### v1.0.0
+- ✅ Basic text summarization
+- ✅ PDF processing
+- ✅ URL content extraction
+- ✅ Multi-language support
 
 ---
 
-**Note**: This application is designed for educational and research purposes. Please ensure you have the right to process and summarize the content you input into the application.
+**Made with ❤️ for the Hindi and English speaking community**
