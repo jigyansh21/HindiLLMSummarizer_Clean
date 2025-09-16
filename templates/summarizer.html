@@ -377,12 +377,28 @@
                                     placeholder="https://www.youtube.com/watch?v=..."
                                 />
                             </div>
-                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
                                 <div class="flex items-start">
-                                    <i class="fas fa-exclamation-triangle text-red-600 mt-1 mr-3"></i>
-                                    <div class="text-sm text-red-800">
-                                        <p class="font-medium mb-1">Note:</p>
-                                        <p>YouTube processing requires the video to have captions/transcripts available. Not all videos support this feature.</p>
+                                    <i class="fas fa-info-circle text-blue-600 dark:text-blue-400 mt-1 mr-3"></i>
+                                    <div class="text-sm text-blue-800 dark:text-blue-200">
+                                        <p class="font-medium mb-1">How to use YouTube processing:</p>
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>Only videos with captions/transcripts can be processed</li>
+                                            <li>Try popular videos or educational content (more likely to have captions)</li>
+                                            <li>If a video doesn't work, try the Text or URL input options instead</li>
+                                            <li>Make sure the video is public and not age-restricted</li>
+                                            <li><strong>Tip:</strong> Look for videos with the "CC" (closed captions) icon</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4 mt-4">
+                                <div class="flex items-start">
+                                    <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 mt-1 mr-3"></i>
+                                    <div class="text-sm text-yellow-800 dark:text-yellow-200">
+                                        <p class="font-medium mb-1">If you get an error:</p>
+                                        <p>Don't worry! You can still summarize content by copying the video's description or using the Text input option instead.</p>
                                     </div>
                                 </div>
                             </div>
@@ -536,9 +552,26 @@
             updateWordCount();
             document.getElementById('text-input').addEventListener('input', updateWordCount);
             document.getElementById('pdf-input').addEventListener('change', handlePDFUpload);
+            
+            // Start theme monitoring with less aggressive frequency
+            setInterval(enforceTheme, 5000);
+            
+            // Double-check theme after a short delay
+            setTimeout(() => {
+                enforceTheme();
+            }, 200);
         });
 
         function switchTab(tab) {
+            console.log(`Switching to ${tab} tab, current theme: ${localStorage.getItem('theme')}`);
+            
+            // Preserve current theme state before switching
+            const currentTheme = localStorage.getItem('theme');
+            const isCurrentlyDark = document.body.classList.contains('dark');
+            const language = '{{ language }}';
+            
+            console.log(`Theme state before ${tab} switch - Language: ${language}, Theme: ${currentTheme}, Dark: ${isCurrentlyDark}`);
+            
             // Update tab buttons
             document.querySelectorAll('[id^="tab-"]').forEach(btn => {
                 btn.className = btn.className.replace('tab-active', 'tab-inactive');
@@ -552,6 +585,45 @@
             document.getElementById(`content-${tab}`).classList.remove('hidden');
 
             currentTab = tab;
+            
+            // Check theme consistency after tab switch (less aggressive)
+            setTimeout(() => {
+                const savedTheme = localStorage.getItem('theme');
+                const isDark = document.body.classList.contains('dark');
+                
+                // Only apply theme if there's a mismatch
+                if ((savedTheme === 'dark' && !isDark) || (savedTheme === 'light' && isDark)) {
+                    console.log(`Theme mismatch after ${tab} tab switch - Language: ${language}, Saved: ${savedTheme}, Current: ${isDark ? 'dark' : 'light'}`);
+                    
+                    if (savedTheme === 'dark') {
+                        console.log(`Applying dark theme after ${tab} tab switch for ${language}`);
+                        document.body.classList.add('dark');
+                        document.body.classList.remove('gradient-bg');
+                        document.body.classList.add('gradient-bg-dark');
+                        
+                        // Update theme toggle icons
+                        const sunIcon = document.getElementById('sun-icon');
+                        const moonIcon = document.getElementById('moon-icon');
+                        if (sunIcon && moonIcon) {
+                            sunIcon.classList.remove('hidden');
+                            moonIcon.classList.add('hidden');
+                        }
+                    } else if (savedTheme === 'light') {
+                        console.log(`Applying light theme after ${tab} tab switch for ${language}`);
+                        document.body.classList.remove('dark');
+                        document.body.classList.remove('gradient-bg-dark');
+                        document.body.classList.add('gradient-bg');
+                        
+                        // Update theme toggle icons
+                        const sunIcon = document.getElementById('sun-icon');
+                        const moonIcon = document.getElementById('moon-icon');
+                        if (sunIcon && moonIcon) {
+                            sunIcon.classList.add('hidden');
+                            moonIcon.classList.remove('hidden');
+                        }
+                    }
+                }
+            }, 50);
         }
 
         function updateWordCount() {
@@ -602,6 +674,8 @@
             try {
                 let result;
                 const summaryLength = document.querySelector('input[name="summary-length"]:checked').value;
+                
+                console.log(`Processing input - Tab: ${currentTab}, Language: {{ language }}, Summary Length: ${summaryLength}`);
 
                 if (currentTab === 'text') {
                     result = await processText(summaryLength);
@@ -613,18 +687,42 @@
                     result = await processYouTube(summaryLength);
                 }
 
+                console.log('Processing successful:', result);
+
                 // Update stats
                 updateStats(result);
 
+                // Preserve theme before redirect
+                const currentTheme = localStorage.getItem('theme');
+                const language = '{{ language }}';
+                console.log(`Preserving theme ${currentTheme} before redirect to results for ${language}`);
+                
+                // Ensure theme is properly saved before redirect
+                if (currentTheme) {
+                    localStorage.setItem('theme', currentTheme);
+                    console.log(`Theme ${currentTheme} saved for ${language} before redirect`);
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    console.log(`Default theme 'light' saved for ${language} before redirect`);
+                }
+                
                 // Redirect to results
                 const params = new URLSearchParams({
                     summary: result.summary,
                     title: result.title || 'Summary',
-                    language: '{{ language }}'
+                    language: language
                 });
                 window.location.href = `/result?${params.toString()}`;
 
             } catch (error) {
+                console.error('Processing error:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack,
+                    currentTab: currentTab,
+                    language: '{{ language }}',
+                    summaryLength: document.querySelector('input[name="summary-length"]:checked')?.value
+                });
                 alert(`Error: ${error.message}`);
             } finally {
                 // Hide loading
@@ -679,8 +777,14 @@
                     summary_length: summaryLength
                 })
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+            }
+            
             const result = await response.json();
-            if (!result.success) throw new Error(result.detail);
+            if (!result.success) throw new Error(result.detail || 'Unknown error occurred');
             return result;
         }
 
@@ -695,8 +799,14 @@
                     summary_length: summaryLength
                 })
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+            }
+            
             const result = await response.json();
-            if (!result.success) throw new Error(result.detail);
+            if (!result.success) throw new Error(result.detail || 'Unknown error occurred');
             return result;
         }
 
@@ -711,13 +821,27 @@
                 method: 'POST',
                 body: formData
             });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
+            }
+            
             const result = await response.json();
-            if (!result.success) throw new Error(result.detail);
+            if (!result.success) throw new Error(result.detail || 'Unknown error occurred');
             return result;
         }
 
         async function processYouTube(summaryLength) {
             const url = document.getElementById('youtube-input').value;
+            
+            // Basic URL validation
+            if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+                throw new Error('Please enter a valid YouTube URL (youtube.com or youtu.be)');
+            }
+            
+            console.log(`Processing YouTube with language: {{ language }}, summary_length: ${summaryLength}`);
+            
             const response = await fetch('/api/summarize/youtube', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -727,8 +851,35 @@
                     summary_length: summaryLength
                 })
             });
+            
+            console.log(`YouTube API response status: ${response.status}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMessage = errorData.detail || `HTTP ${response.status}: ${response.statusText}`;
+                
+                console.error(`YouTube API error: ${errorMessage}`);
+                
+                // Provide more helpful error messages
+                if (errorMessage.includes('captions/transcripts available') || 
+                    errorMessage.includes('no transcripts were found') || 
+                    errorMessage.includes('could not retrieve a transcript')) {
+                    throw new Error('This video doesn\'t have captions/transcripts available. Please try a different video that has captions enabled, or use the Text or URL input options instead.');
+                } else if (errorMessage.includes('unavailable or private')) {
+                    throw new Error('This video is unavailable or private. Please try a different video.');
+                } else if (errorMessage.includes('quota exceeded')) {
+                    throw new Error('YouTube API quota exceeded. Please try again later.');
+                } else if (errorMessage.includes('Invalid YouTube URL')) {
+                    throw new Error('Invalid YouTube URL. Please provide a valid YouTube video URL.');
+                } else {
+                    throw new Error(errorMessage);
+                }
+            }
+            
             const result = await response.json();
-            if (!result.success) throw new Error(result.detail);
+            console.log(`YouTube API result:`, result);
+            
+            if (!result.success) throw new Error(result.detail || 'Unknown error occurred');
             return result;
         }
 
@@ -785,11 +936,17 @@
             const body = document.getElementById('body');
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
+            const language = '{{ language }}';
+            
+            console.log(`Initializing theme for ${language}, saved theme: ${savedTheme}`);
             
             if (!body || !sunIcon || !moonIcon) {
                 console.error('Theme elements not found during initialization');
                 return;
             }
+            
+            // Force remove any existing theme classes first
+            body.classList.remove('dark', 'gradient-bg', 'gradient-bg-dark');
             
             if (savedTheme === 'dark') {
                 body.classList.add('dark');
@@ -797,14 +954,70 @@
                 body.classList.add('gradient-bg-dark');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
-                console.log('Initialized dark mode');
+                console.log(`Initialized dark mode for ${language}`);
             } else {
                 body.classList.remove('dark');
                 body.classList.remove('gradient-bg-dark');
                 body.classList.add('gradient-bg');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
-                console.log('Initialized light mode');
+                console.log(`Initialized light mode for ${language}`);
+            }
+        }
+        
+        // Theme enforcement function - less aggressive
+        function enforceTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const isDark = document.body.classList.contains('dark');
+            const language = '{{ language }}';
+            
+            // Only log if there's a mismatch to reduce console spam
+            if ((savedTheme === 'dark' && !isDark) || (savedTheme === 'light' && isDark)) {
+                console.log(`Theme enforcement check - Language: ${language}, Saved: ${savedTheme}, Current: ${isDark ? 'dark' : 'light'}`);
+            }
+            
+            // Only apply theme if there's a clear mismatch
+            if (savedTheme === 'dark' && !isDark) {
+                console.log(`Enforcing dark theme for ${language}`);
+                document.body.classList.add('dark');
+                document.body.classList.remove('gradient-bg');
+                document.body.classList.add('gradient-bg-dark');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            } else if (savedTheme === 'light' && isDark) {
+                console.log(`Enforcing light theme for ${language}`);
+                document.body.classList.remove('dark');
+                document.body.classList.remove('gradient-bg-dark');
+                document.body.classList.add('gradient-bg');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
+            } else if (!savedTheme) {
+                // Default to light theme if no preference is saved
+                console.log(`No theme preference found for ${language}, defaulting to light theme`);
+                localStorage.setItem('theme', 'light');
+                document.body.classList.remove('dark');
+                document.body.classList.remove('gradient-bg-dark');
+                document.body.classList.add('gradient-bg');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
             }
         }
     </script>

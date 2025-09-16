@@ -43,40 +43,97 @@ class YouTubeProcessor:
             return None
     
     async def get_transcript(self, video_id: str, language: str = "en") -> str:
-        """Get transcript for YouTube video"""
+        """Get transcript for YouTube video using the new API"""
         if not YOUTUBE_API_AVAILABLE or not YouTubeTranscriptApi:
             raise Exception("YouTube transcript API not available. Please install youtube-transcript-api: pip install youtube-transcript-api")
         
         try:
-            # Create an instance of YouTubeTranscriptApi
+            # Create API instance
             api = YouTubeTranscriptApi()
             
-            # Try to get transcript in specified language first
+            # List available transcripts
             try:
-                transcript = api.fetch(video_id, languages=[language])
-            except Exception as lang_error:
-                print(f"Failed to get transcript in {language}: {lang_error}")
-                # Fallback to any available language
+                transcript_list = api.list(video_id)
+                available_transcripts = list(transcript_list)
+                
+                print(f"Available transcripts: {len(available_transcripts)}")
+                for i, transcript in enumerate(available_transcripts):
+                    print(f"  {i}: {transcript.language_code} - {transcript.language}")
+                
+                if not available_transcripts:
+                    raise Exception("This video doesn't have any captions/transcripts available. Please try a different video that has captions enabled.")
+                
+                # Try to get transcript in specified language first
                 try:
-                    transcript = api.fetch(video_id)
-                except Exception as fallback_error:
-                    print(f"Failed to get transcript in any language: {fallback_error}")
-                    raise Exception(f"No transcript available for this video. Error: {str(fallback_error)}")
+                    # Find transcript in the specified language
+                    transcript = None
+                    for t in available_transcripts:
+                        if t.language_code == language:
+                            transcript = t
+                            break
+                    
+                    if transcript:
+                        transcript_data = transcript.fetch()
+                        print(f"Successfully got transcript in {transcript.language_code}")
+                    else:
+                        # Try to find a close match (e.g., 'en' for 'en-US')
+                        for t in available_transcripts:
+                            if t.language_code.startswith(language.split('-')[0]):
+                                transcript = t
+                                break
+                        
+                        if transcript:
+                            transcript_data = transcript.fetch()
+                            print(f"Successfully got transcript in {transcript.language_code} (fallback)")
+                        else:
+                            raise Exception(f"No transcript found for language {language}")
+                            
+                except Exception as lang_error:
+                    print(f"Failed to get transcript in {language}: {lang_error}")
+                    # Fallback to any available language
+                    try:
+                        # Try to get any available transcript
+                        transcript = available_transcripts[0]
+                        transcript_data = transcript.fetch()
+                        print(f"Successfully got transcript in {transcript.language_code} (any language)")
+                    except Exception as fallback_error:
+                        print(f"Failed to get any available transcript: {fallback_error}")
+                        raise Exception("This video doesn't have captions/transcripts available. Please try a different video that has captions enabled.")
             
-            if not transcript:
-                raise Exception("No transcript available for this video")
+            except Exception as list_error:
+                print(f"Failed to list transcripts: {list_error}")
+                raise Exception("This video doesn't have captions/transcripts available. Please try a different video that has captions enabled.")
+            
+            if not transcript_data:
+                raise Exception("No transcript available for this video. Please ensure the video has captions enabled.")
             
             # Format transcript as plain text
             if self.formatter:
-                formatted_text = self.formatter.format_transcript(transcript)
+                formatted_text = self.formatter.format_transcript(transcript_data)
             else:
                 # Manual formatting if formatter not available
-                formatted_text = " ".join([entry['text'] for entry in transcript])
+                formatted_text = " ".join([entry['text'] for entry in transcript_data])
             
             return formatted_text
             
         except Exception as e:
-            raise Exception(f"Failed to get transcript: {str(e)}")
+            # Only catch specific "no captions" errors, let other errors pass through
+            error_msg = str(e)
+            if any(phrase in error_msg.lower() for phrase in [
+                "no transcripts were found",
+                "could not retrieve a transcript",
+                "no element found",
+                "transcript not found",
+                "captions/transcripts available"
+            ]):
+                raise Exception("This video doesn't have captions/transcripts available. Please try a different video that has captions enabled.")
+            elif "video unavailable" in error_msg.lower():
+                raise Exception("This video is unavailable or private. Please try a different video.")
+            elif "quota exceeded" in error_msg.lower():
+                raise Exception("YouTube API quota exceeded. Please try again later.")
+            else:
+                # For other errors, re-raise the original error
+                raise e
     
     async def get_video_info(self, video_id: str) -> Dict[str, Any]:
         """Get basic video information"""
@@ -108,17 +165,40 @@ class YouTubeProcessor:
             # Extract video ID
             video_id = self.extract_video_id(url)
             if not video_id:
-                raise Exception("Invalid YouTube URL")
+                raise Exception("Invalid YouTube URL. Please provide a valid YouTube video URL.")
+            
+            # Validate URL format
+            if not self.is_valid_youtube_url(url):
+                raise Exception("Invalid YouTube URL format. Please provide a valid YouTube video URL.")
             
             # Get video info
             video_info = await self.get_video_info(video_id)
             
-            # Get transcript
+            # Get transcript with better error handling
             transcript_language = "hi" if language == "hindi" else "en"
-            transcript = await self.get_transcript(video_id, transcript_language)
+            try:
+                transcript = await self.get_transcript(video_id, transcript_language)
+            except Exception as transcript_error:
+                # Only modify specific "no captions" errors, let other errors pass through
+                error_msg = str(transcript_error)
+                if "captions/transcripts available" in error_msg:
+                    raise Exception("This video doesn't have captions/transcripts available. Please try a different video that has captions enabled, or use the Text or URL input options instead.")
+                elif "unavailable or private" in error_msg:
+                    raise Exception("This video is unavailable or private. Please try a different video.")
+                elif "quota exceeded" in error_msg:
+                    raise Exception("YouTube API quota exceeded. Please try again later.")
+                else:
+                    # For other errors, try to get transcript in any available language
+                    try:
+                        print(f"Trying to get transcript in any available language...")
+                        transcript = await self.get_transcript(video_id, "en")  # Try English as fallback
+                    except Exception as fallback_error:
+                        print(f"Fallback also failed: {fallback_error}")
+                        # If fallback also fails, re-raise the original error
+                        raise transcript_error
             
             if not transcript.strip():
-                raise Exception("No transcript available for this video")
+                raise Exception("No transcript available for this video. Please try a different video that has captions enabled.")
             
             # Import summarizer service
             from src.core.summarizer import SummarizerService
@@ -139,7 +219,18 @@ class YouTubeProcessor:
             return result
             
         except Exception as e:
-            raise Exception(f"Failed to process YouTube video: {str(e)}")
+            # Don't wrap the error message again if it's already user-friendly
+            error_msg = str(e)
+            if any(phrase in error_msg.lower() for phrase in [
+                "captions/transcripts available", 
+                "unavailable or private", 
+                "quota exceeded",
+                "invalid youtube url"
+            ]):
+                raise Exception(error_msg)
+            else:
+                # For other errors, provide a more generic message but don't hide the original error
+                raise Exception(f"Failed to process YouTube video: {error_msg}")
     
     def is_valid_youtube_url(self, url: str) -> bool:
         """Check if URL is a valid YouTube URL"""

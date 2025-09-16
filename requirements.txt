@@ -22,9 +22,11 @@ markdown==3.5.1
 newspaper3k==0.2.8
 beautifulsoup4==4.13.4
 requests==2.31.0
+lxml==5.1.0
+lxml_html_clean==0.4.2
 
 # YouTube processing
-youtube-transcript-api==0.6.2
+youtube-transcript-api==1.2.2
 
 # Utilities
 python-dateutil==2.9.0

@@ -36,9 +36,6 @@ TEMPLATES_DIR.mkdir(exist_ok=True)
 STATIC_DIR.mkdir(exist_ok=True)
 
 # Setup templates and static files
-print(f"Templates directory: {TEMPLATES_DIR}")
-print(f"Templates exists: {TEMPLATES_DIR.exists()}")
-print(f"Templates contents: {list(TEMPLATES_DIR.glob('*.html')) if TEMPLATES_DIR.exists() else 'Directory not found'}")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
@@ -110,7 +107,7 @@ async def summarize_text(request: SummarizeRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return result
+        return {"success": True, **result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -123,7 +120,7 @@ async def summarize_url(request: SummarizeURLRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return result
+        return {"success": True, **result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -159,7 +156,7 @@ async def summarize_pdf(
             result["filename"] = file.filename
             result["file_type"] = "PDF"
             
-            return result
+            return {"success": True, **result}
             
         finally:
             # Clean up temporary file
@@ -177,7 +174,7 @@ async def summarize_youtube(request: SummarizeYouTubeRequest):
             language=request.language,
             summary_length=request.summary_length
         )
-        return result
+        return {"success": True, **result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -189,18 +186,28 @@ async def export_pdf(
 ):
     """Export summary as PDF"""
     try:
+        if not summary or not summary.strip():
+            raise HTTPException(status_code=400, detail="Summary cannot be empty")
+        
         pdf_path = await summarizer_service.export_pdf(
             summary=summary,
             title=title,
             language=language
         )
+        
+        if not os.path.exists(pdf_path):
+            raise HTTPException(status_code=500, detail="Failed to generate PDF file")
+        
         return FileResponse(
             pdf_path,
             media_type="application/pdf",
             filename=f"{title.replace(' ', '_')}.pdf"
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"PDF export error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to export PDF: {str(e)}")
 
 @app.post("/api/export/word")
 async def export_word(

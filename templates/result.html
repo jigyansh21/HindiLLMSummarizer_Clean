@@ -362,17 +362,26 @@
         // Immediate theme check - run as soon as script loads
         (function() {
             const savedTheme = localStorage.getItem('theme');
-            console.log('Immediate theme check, saved theme:', savedTheme);
+            const language = '{{ language }}';
+            console.log(`Immediate theme check - Language: ${language}, saved theme: ${savedTheme}`);
+            
+            // Force remove any existing theme classes first
+            document.body.classList.remove('dark', 'gradient-bg', 'gradient-bg-dark');
+            
             if (savedTheme === 'dark') {
-                // Apply dark theme immediately with multiple approaches
+                // Apply dark theme immediately
                 document.documentElement.classList.add('dark');
                 document.body.classList.add('dark');
                 document.body.classList.remove('gradient-bg');
                 document.body.classList.add('gradient-bg-dark');
-                
-                // Force style attribute as backup
-                document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
-                console.log('Immediate dark theme applied with force styling');
+                console.log(`Immediate dark theme applied for ${language}`);
+            } else {
+                // Apply light theme immediately
+                document.documentElement.classList.remove('dark');
+                document.body.classList.remove('dark');
+                document.body.classList.remove('gradient-bg-dark');
+                document.body.classList.add('gradient-bg');
+                console.log(`Immediate light theme applied for ${language}`);
             }
         })();
 
@@ -417,8 +426,9 @@
             const body = document.getElementById('body');
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
+            const language = '{{ language }}';
             
-            console.log('Initializing theme, saved theme:', savedTheme);
+            console.log(`Initializing theme for ${language}, saved theme: ${savedTheme}`);
             
             if (!body) {
                 console.error('Body element not found during theme initialization');
@@ -439,35 +449,41 @@
                     sunIcon.classList.remove('hidden');
                     moonIcon.classList.add('hidden');
                 }
-                console.log('Applied dark mode theme');
+                console.log(`Applied dark mode theme for ${language}`);
             } else {
                 body.classList.add('gradient-bg');
                 if (sunIcon && moonIcon) {
                     sunIcon.classList.add('hidden');
                     moonIcon.classList.remove('hidden');
                 }
-                console.log('Applied light mode theme');
+                console.log(`Applied light mode theme for ${language}`);
             }
         }
 
         function copyToClipboard() {
             try {
+                console.log('Copy to clipboard function called');
                 const summaryText = document.getElementById('summary-content').textContent;
+                console.log('Summary text length:', summaryText ? summaryText.length : 0);
                 
                 if (!summaryText || summaryText.trim() === '') {
+                    console.log('No content to copy');
                     showToast('No content to copy!', 'error');
                     return;
                 }
                 
                 if (navigator.clipboard && window.isSecureContext) {
+                    console.log('Using modern clipboard API');
                     // Modern clipboard API
                     navigator.clipboard.writeText(summaryText).then(() => {
+                        console.log('Clipboard API success');
                         showToast('Summary copied to clipboard!');
                     }).catch((err) => {
                         console.error('Clipboard API failed:', err);
                         fallbackCopyToClipboard(summaryText);
                     });
                 } else {
+                    console.log('Using fallback clipboard method');
                     // Fallback for older browsers or non-secure contexts
                     fallbackCopyToClipboard(summaryText);
                 }
@@ -504,11 +520,18 @@
 
         async function exportPDF() {
             try {
+                console.log('PDF export function called');
                 showToast('Generating PDF...');
                 // Get the summary content from the page
                 const summaryContent = document.getElementById('summary-content').textContent;
                 const title = '{{ title }}';
                 const language = '{{ language }}';
+                
+                console.log('PDF export data:', {
+                    summaryLength: summaryContent ? summaryContent.length : 0,
+                    title: title,
+                    language: language
+                });
                 
                 const response = await fetch('/api/export/pdf', {
                     method: 'POST',
@@ -520,8 +543,11 @@
                     })
                 });
                 
+                console.log('PDF export response status:', response.status);
+                
                 if (response.ok) {
                     const blob = await response.blob();
+                    console.log('PDF blob size:', blob.size);
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -533,6 +559,7 @@
                     showToast('PDF downloaded successfully!');
                 } else {
                     const errorText = await response.text();
+                    console.error('PDF export failed:', response.status, errorText);
                     throw new Error('Failed to generate PDF: ' + errorText);
                 }
             } catch (error) {
@@ -655,16 +682,58 @@
         }
 
 
-        // Continuous theme monitoring
+        // Theme monitoring - less aggressive enforcement
         function enforceTheme() {
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                if (!document.body.classList.contains('dark')) {
-                    console.log('Enforcing dark theme - adding dark class');
-                    document.body.classList.add('dark');
-                    document.body.classList.remove('gradient-bg');
-                    document.body.classList.add('gradient-bg-dark');
-                    document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
+            const isDark = document.body.classList.contains('dark');
+            const language = '{{ language }}';
+            
+            // Only log if there's a mismatch to reduce console spam
+            if ((savedTheme === 'dark' && !isDark) || (savedTheme === 'light' && isDark)) {
+                console.log(`Theme enforcement check - Language: ${language}, Saved: ${savedTheme}, Current: ${isDark ? 'dark' : 'light'}`);
+            }
+            
+            // Only apply theme if there's a clear mismatch
+            if (savedTheme === 'dark' && !isDark) {
+                console.log(`Enforcing dark theme for ${language} result page`);
+                document.body.classList.add('dark');
+                document.body.classList.remove('gradient-bg');
+                document.body.classList.add('gradient-bg-dark');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            } else if (savedTheme === 'light' && isDark) {
+                console.log(`Enforcing light theme for ${language} result page`);
+                document.body.classList.remove('dark');
+                document.body.classList.remove('gradient-bg-dark');
+                document.body.classList.add('gradient-bg');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
+            } else if (!savedTheme) {
+                // Default to light theme if no preference is saved
+                console.log(`No theme preference found for ${language} result page, defaulting to light theme`);
+                localStorage.setItem('theme', 'light');
+                document.body.classList.remove('dark');
+                document.body.classList.remove('gradient-bg-dark');
+                document.body.classList.add('gradient-bg');
+                
+                // Update theme toggle icons
+                const sunIcon = document.getElementById('sun-icon');
+                const moonIcon = document.getElementById('moon-icon');
+                if (sunIcon && moonIcon) {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
                 }
             }
         }
@@ -674,37 +743,13 @@
             // Initialize theme FIRST
             initializeTheme();
             
-            // Start continuous theme monitoring
-            setInterval(enforceTheme, 100);
-            
-            // Watch for changes to body class and reapply theme if needed
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                        const savedTheme = localStorage.getItem('theme');
-                        if (savedTheme === 'dark' && !document.body.classList.contains('dark')) {
-                            console.log('Body class changed, re-applying dark theme');
-                            document.body.classList.add('dark');
-                            document.body.classList.remove('gradient-bg');
-                            document.body.classList.add('gradient-bg-dark');
-                            document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
-                        }
-                    }
-                });
-            });
-            observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+            // Light theme monitoring - check less frequently
+            setInterval(enforceTheme, 5000);
             
             // Double-check theme after a short delay
             setTimeout(() => {
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme === 'dark' && !document.body.classList.contains('dark')) {
-                    console.log('Re-applying dark theme after delay');
-                    document.body.classList.add('dark');
-                    document.body.classList.remove('gradient-bg');
-                    document.body.classList.add('gradient-bg-dark');
-                    document.body.style.background = 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)';
-                }
-            }, 100);
+                enforceTheme();
+            }, 200);
             
             // Calculate and display statistics
             const summaryText = '{{ summary }}';
