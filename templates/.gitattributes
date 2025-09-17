@@ -1,0 +1,5 @@
+# Mark all template files as documentation
+*.html linguist-documentation
+
+
+

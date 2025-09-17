@@ -1,13 +1,18 @@
 # Force GitHub to recognize this as a Python project
 *.py linguist-language=Python
-*.html linguist-language=HTML
-*.css linguist-language=CSS
+*.html linguist-documentation
+*.css linguist-documentation
 
-# Exclude template files from language detection
-templates/*.html linguist-documentation
-static/*.css linguist-documentation
+# Exclude all template and static files from language detection
+templates/* linguist-documentation
+static/* linguist-documentation
+fonts/* linguist-documentation
 
-# Mark as primary language
+# Force Python as the only detectable language
 *.py linguist-detectable=true
 *.html linguist-detectable=false
 *.css linguist-detectable=false
+*.js linguist-detectable=false
+*.json linguist-detectable=false
+*.md linguist-documentation
+*.txt linguist-documentation

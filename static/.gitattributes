@@ -1,0 +1,5 @@
+# Mark all static files as documentation
+*.css linguist-documentation
+
+
+
