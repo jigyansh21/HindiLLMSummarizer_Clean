@@ -10,8 +10,9 @@ import tempfile
 from typing import Dict, Any, Literal
 from pathlib import Path
 
-# Note: ML models removed for Vercel compatibility
-# Using extractive summarization only
+# AI Model imports
+from transformers.models.t5 import T5Tokenizer, T5ForConditionalGeneration
+import torch
 
 # Export libraries
 from fpdf import FPDF
@@ -21,9 +22,34 @@ import markdown
 
 class SummarizerService:
     def __init__(self):
-        # ML models removed for Vercel compatibility
-        # Using extractive summarization only
-        pass
+        self.tokenizer = None
+        self.model = None
+        self.model_loaded = False
+        
+    async def load_model(self):
+        """Load the T5 model asynchronously"""
+        if self.model_loaded:
+            return
+            
+        try:
+            print("Loading T5 model...")
+            # Run model loading in thread pool to avoid blocking
+            loop = asyncio.get_event_loop()
+            self.tokenizer, self.model = await loop.run_in_executor(
+                None, self._load_model_sync
+            )
+            self.model_loaded = True
+            print("T5 model loaded successfully!")
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            self.model_loaded = False
+    
+    def _load_model_sync(self):
+        """Synchronous model loading"""
+        model_name = "t5-small"
+        tokenizer = T5Tokenizer.from_pretrained(model_name)
+        model = T5ForConditionalGeneration.from_pretrained(model_name)
+        return tokenizer, model
     
     async def summarize_text(
         self, 
@@ -49,7 +75,8 @@ class SummarizerService:
                 else:
                     summary_length = "long"
             
-            # Using extractive summarization method (ML models removed for Vercel compatibility)
+            # For now, use extractive summarization as primary method
+            # T5 model needs more work for proper summarization
             print("Using extractive summarization method")
             return await self._extractive_summarize(text, language, summary_length)
         except Exception as e:
